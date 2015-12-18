@@ -2,7 +2,13 @@ Router.configure({
   layoutTemplate: 'navbartop'
 });
 
-Router.route('/', function(){
+
+Router.route('', function(){
+  this.render('main');
+  this.layout('navbartop');
+});
+
+Router.route('main', function(){
   this.render('main');
   this.layout('navbartop');
 });
