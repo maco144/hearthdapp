@@ -35,7 +35,6 @@ if (Meteor.isClient) {
     'click #unregister': function(event){
       event.preventDefault();
       var player = Meteor.userId();
-      console.log("player is " + player);
       Meteor.call('removeFromQ', player);
     }
   });
@@ -50,6 +49,16 @@ if (Meteor.isClient) {
     }
   });
 
+  //for autoform 
+  Template.profile.helpers({
+    users: function () {
+      return Meteor.users;
+    },
+    userSchema: function () {
+      return Schema.User;
+    }
+  });
+
   Template.activeq.helpers({
     'players': function(){
       return Players.find({}, {sort: {stake: -1, name: 1}});
@@ -58,9 +67,6 @@ if (Meteor.isClient) {
 
   Template.activeq.events({
     //challenge opponent by selecting them
-    'dblclick .player': function(){
-      var playerId = this.name;
-    },
     'click .player': function(){
       var playerChallenged = this.name;
       var playerChallenger = Meteor.userId();
@@ -79,20 +85,8 @@ if (Meteor.isClient) {
 
   Template.navbartop.events({
     'click .navbar-nav li': function(event){
-      console.log("li cl" + event);
     },
     'click .navbar-brand': function(event){
-      console.log("brand+" + event);
-    }
-  });
-
-    Template.example.helpers({
-    usersOnline:function(){
-      return Meteor.users.find({ "status.online": true })
-    },
-    usersOnlineCount:function(){
-   //event a count of users online too.
-      return Meteor.users.find({ "status.online": true }).count();
     }
   });
 

@@ -23,4 +23,5 @@ accounts-ui
 accounts-password
 reactive-var
 iron:router
-mizzao:user-status
+aldeed:autoform
+aldeed:collection2
