@@ -56,6 +56,16 @@ if (Meteor.isClient) {
     },
     userSchema: function () {
       return Schema.User;
+    },
+    'typeAction': function(){
+      var a = "insert";
+       if(Meteor.users.findOne({_id: Meteor.userId()}))
+            a = "update";
+       return a;
+   },
+    'current': function(){
+      var ID = Meteor.users.findOne({_id: Meteor.userId()});
+      return ID;
     }
   });
 

@@ -52,11 +52,11 @@
 <template name="profile">
 	<h2>PROFILE</h2>
     <div class="panel-body">
-    {{#autoForm collection="Meteor.users" id="signupForm" type="insert"}}
+    {{#autoForm collection="Meteor.users" doc=current id="signupForm" type=typeAction}}
     <fieldset>
       {{> afObjectField name='profile'}}
     </fieldset>
-    <button type="submit" class="btn btn-primary">Insert</button>
+    <button type="submit" class="btn btn-primary">Update</button>
     {{/autoForm}}
    </div>
 </template>

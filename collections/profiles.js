@@ -4,7 +4,8 @@ Schema = {};
         firstName: {
             type: String,
             regEx: /^[a-zA-Z-]{2,25}$/,
-            optional: true
+            optional: true,
+            label: "Battle"
         },
         lastName: {
             type: String,
@@ -24,6 +25,9 @@ Schema = {};
         },
         emails: {
             type: [Object]
+        },
+        "emails.$":{
+            type: Object
         },
         "emails.$.address": {
             type: String,
@@ -45,5 +49,5 @@ Schema = {};
             blackbox: true
         }
     });
-
+    SimpleSchema.debug = true;
     Meteor.users.attachSchema(Schema.User);
