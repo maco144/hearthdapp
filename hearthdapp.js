@@ -1,11 +1,13 @@
 Players = new Mongo.Collection('players');
 GameRequest = new Mongo.Collection('gamerequest');
+Config = new Mongo.Collection('config');
 
 
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
   Meteor.subscribe("players");
   Meteor.subscribe("gameRequests");
+  Meteor.subscribe("config");
 
   var lastUser=null;
   Meteor.startup(function(){
@@ -93,10 +95,21 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.navbartop.events({
-    'click .navbar-nav li': function(event){
-    },
-    'click .navbar-brand': function(event){
+  Template.mainlayout.helpers({
+    'config': function() {
+      return Config.findOne({});
+    }
+  });
+
+  Template.signin.helpers({
+    'config': function() {
+      return Config.findOne({});
+    }
+  });
+
+  Template.register.helpers({
+    'config': function() {
+      return Config.findOne({});
     }
   });
 
@@ -104,7 +117,16 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // code to run on server at startup
+    Config.remove({});
+
+    Config.insert({
+        application       : 'GameGames',
+        allowSignin       : true,
+        allowSignup       : true,
+        allowDeleteAccount: true,
+        allowUploadAvatar : false,
+        enableEvents      : false
+    });
   });
   Meteor.publish('players', function(){
       return Players.find({}, {sort: {stake: -1, name: 1}});
@@ -120,6 +142,10 @@ if (Meteor.isServer) {
      //   { playerChallenger: Meteor.userId() }, 
      //   { playerChallenged: Meteor.userId() }
      // ]});
+  });
+
+  Meteor.publish('config',function(){
+    return Config.find({});
   });
 
   Meteor.methods({

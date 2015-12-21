@@ -24,6 +24,7 @@ reactive-var
 iron:router
 aldeed:autoform
 aldeed:collection2
-semantic:ui
 flemay:less-autoprefixer
 fabienb4:autoform-semantic-ui
+zimme:active-route
+semantic:ui-css
