@@ -2,7 +2,6 @@ Players = new Mongo.Collection('players');
 GameRequest = new Mongo.Collection('gamerequest');
 Config = new Mongo.Collection('config');
 
-
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
   Meteor.subscribe("players");
@@ -29,6 +28,14 @@ if (Meteor.isClient) {
 
     Template.addPlayerForm.events({
     'submit form': function(event){
+      console.log("submit button click");
+      event.preventDefault();
+      var player = Meteor.userId();
+      var wager = Number(event.target.wager.value);
+      Meteor.call('insertToQ', player, wager);
+    },
+    'click #join': function(event){
+      console.log("submit button click" );
       event.preventDefault();
       var player = Meteor.userId();
       var wager = Number(event.target.wager.value);
@@ -40,6 +47,20 @@ if (Meteor.isClient) {
       Meteor.call('removeFromQ', player);
     }
   });
+
+    Template.addPlayerForm.helpers({
+    'current': function(){
+      var ID = Meteor.users.findOne({_id: Meteor.userId()});
+      return ID;
+    }
+    });
+
+    Template.addPlayerQF.helpers({
+    'current': function(){
+      var ID = Meteor.users.findOne({_id: Meteor.userId()});
+      return ID;
+    }
+    });
 
   Template.example.helpers({
     usersOnline:function(){
@@ -71,6 +92,7 @@ if (Meteor.isClient) {
     }
   });
 
+
   Template.activeq.helpers({
     'players': function(){
       return Players.find({}, {sort: {stake: -1, name: 1}});
@@ -95,23 +117,10 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.mainlayout.helpers({
-    'config': function() {
-      return Config.findOne({});
-    }
+  Template.registerHelper("config", function(){
+    return Config.findOne({});
   });
 
-  Template.signin.helpers({
-    'config': function() {
-      return Config.findOne({});
-    }
-  });
-
-  Template.register.helpers({
-    'config': function() {
-      return Config.findOne({});
-    }
-  });
 
 }
 

@@ -70,7 +70,7 @@ Schema = {};
             type: Number,
             autoform: {
                 afFieldInput:{
-                    type: Number
+                    type: "number"
                 }
             }
         }
