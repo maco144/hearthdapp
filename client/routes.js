@@ -29,7 +29,7 @@ Router.route('/signin', function(){
 });
 
 Router.route('/logout', function() {
-//here you put things you wanna render, it's empty since you just want to logout and redirect
+//
 }, {
     name: 'logout',
     onBeforeAction: function () {
@@ -41,4 +41,9 @@ Router.route('/logout', function() {
     onAfterAction: function () {
       Router.go('/signin');
     }
+});
+
+AccountsTemplates.configureRoute('signIn', {
+  name: 'signin',
+  redirect: '/games'
 });
