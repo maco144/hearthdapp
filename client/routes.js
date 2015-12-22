@@ -28,7 +28,17 @@ Router.route('/signin', function(){
 	this.layout('mainlayout');
 });
 
-Router.route('/register', function(){
-	this.render('register');
-	this.layout('mainlayout');
+Router.route('/logout', function() {
+//here you put things you wanna render, it's empty since you just want to logout and redirect
+}, {
+    name: 'logout',
+    onBeforeAction: function () {
+      if (Meteor.userId()) {
+        Meteor.logout()
+      }
+      this.next();
+    },
+    onAfterAction: function () {
+      Router.go('/signin');
+    }
 });

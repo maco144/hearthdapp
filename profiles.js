@@ -49,7 +49,7 @@ Schema = {};
         }
     });
 
-    Schema.GameRequests = new SimpleSchema({
+    Schema.GameRequest = new SimpleSchema({
         player: {
             type: String
         },

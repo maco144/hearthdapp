@@ -1,6 +1,7 @@
 Players = new Mongo.Collection('players');
 GameRequest = new Mongo.Collection('gamerequest');
 Config = new Mongo.Collection('config');
+Songs = new Mongo.Collection('songs');
 
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
@@ -25,17 +26,24 @@ if (Meteor.isClient) {
         lastUser=Meteor.user();
     });
   });
+    
+    Template.registerHelper("config", function(){
+      return Config.findOne({});
+    });
+
+    Template.registerHelper("current", function(){
+      return Meteor.users.findOne({_id: Meteor.userId()});
+    });
 
     Template.addPlayerForm.events({
     'submit form': function(event){
       console.log("submit button click");
       event.preventDefault();
-      var player = Meteor.userId();
       var wager = Number(event.target.wager.value);
-      Meteor.call('insertToQ', player, wager);
+      Meteor.call('insertToQ', wager);
     },
     'click #join': function(event){
-      console.log("submit button click" );
+      console.log("submit button click" + event.target + event.name );
       event.preventDefault();
       var player = Meteor.userId();
       var wager = Number(event.target.wager.value);
@@ -43,24 +51,17 @@ if (Meteor.isClient) {
     },
     'click #unregister': function(event){
       event.preventDefault();
-      var player = Meteor.userId();
-      Meteor.call('removeFromQ', player);
+      Meteor.call('removeFromQ');
     }
   });
 
-    Template.addPlayerForm.helpers({
-    'current': function(){
-      var ID = Meteor.users.findOne({_id: Meteor.userId()});
-      return ID;
-    }
-    });
 
-    Template.addPlayerQF.helpers({
-    'current': function(){
-      var ID = Meteor.users.findOne({_id: Meteor.userId()});
-      return ID;
-    }
-    });
+    //Template.addPlayerQF.helpers({
+    //'current': function(){
+      //var ID = Meteor.users.findOne({_id: Meteor.userId()});
+      //return ID;
+    //}
+   // });
 
   Template.example.helpers({
     usersOnline:function(){
@@ -117,11 +118,6 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.registerHelper("config", function(){
-    return Config.findOne({});
-  });
-
-
 }
 
 if (Meteor.isServer) {
@@ -158,8 +154,8 @@ if (Meteor.isServer) {
   });
 
   Meteor.methods({
-    'insertToQ': function(player, wager){
-      var currentUserId = player;
+    'insertToQ': function( wager){
+      var currentUserId = this.userId;
       Players.update({ name: currentUserId }, { $setOnInsert: { name: currentUserId, stake: wager } }, { upsert: true } ); 
     },
 
@@ -167,7 +163,8 @@ if (Meteor.isServer) {
       Players.remove({name: lastUser});
     },
 
-    'removeFromQ': function(player){
+    'removeFromQ': function(){
+      var player = this.userId;
       Players.remove({name: player});
     },
 
