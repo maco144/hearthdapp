@@ -76,5 +76,53 @@ Schema = {};
         }
     });
 
+    Schema.Match = new SimpleSchema({
+        game:{
+            type: String,
+            optional: false,
+            autoform: {
+                type: "select-radio-inline",
+                options: function(){
+                    return [
+                    {label: "Newerth", value: "newerth"},
+                    {label: "Warsow", value: "warsow"}
+                    ];
+                }
+            }
+        },
+        stake: {
+            type: Number,
+            optional: false,
+            defaultValue: 1,
+            min: 1,
+            autoform: {
+                afFieldInput:{
+                    type: Number
+                }
+            }
+        },
+        winCondition: {
+            type: String,
+            optional: false,
+            autoform: {
+                type: "select",
+                options: function(){
+                    return [
+                    {label: "Default", value: "default"},
+                    {label: "Kills", value: "kills"},
+                    {label: "Time", value: "time"}
+                    ];
+                }
+            }
+        },
+        numberRounds: {
+            type: Number,
+            optional: false,
+            min: 1,
+            defaultValue: 1
+        }
+    });
+
     SimpleSchema.debug = true;
     Meteor.users.attachSchema(Schema.User);
+    Match.attachSchema(Schema.Match);

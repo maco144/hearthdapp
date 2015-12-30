@@ -1,13 +1,10 @@
-Players = new Mongo.Collection('players');
-GameRequest = new Mongo.Collection('gamerequest');
-Config = new Mongo.Collection('config');
-Songs = new Mongo.Collection('songs');
-
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
-  Meteor.subscribe("players");
-  Meteor.subscribe("gameRequests");
-  Meteor.subscribe("config");
+  Meteor.subscribe("players");        //players who have queued
+  Meteor.subscribe("gameRequests");   //when a match is set up
+  Meteor.subscribe("config");         //for UI configs with router
+  Meteor.subscribe("collect");        //for testing upload from file
+  Meteor.subscribe("match");          //details of match type created by host
 
   var lastUser=null;
   Meteor.startup(function(){
@@ -55,13 +52,6 @@ if (Meteor.isClient) {
     }
   });
 
-
-    //Template.addPlayerQF.helpers({
-    //'current': function(){
-      //var ID = Meteor.users.findOne({_id: Meteor.userId()});
-      //return ID;
-    //}
-   // });
 
   Template.example.helpers({
     usersOnline:function(){
@@ -118,6 +108,28 @@ if (Meteor.isClient) {
     }
   });
 
+
+//for testing. currently file upload to a collection
+  Template.main.events({
+  'submit': function(event, template){
+    event.preventDefault();
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      _.each(template.find('#files').files, function(file) {
+        if(file.size > 1){
+          var reader = new FileReader();
+          reader.onload = function(event) {
+            Collect.insert({
+              name: file.name,
+              type: file.type,
+              dataUrl: reader.result
+            });
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  }
+});
 }
 
 if (Meteor.isServer) {
@@ -151,6 +163,14 @@ if (Meteor.isServer) {
 
   Meteor.publish('config',function(){
     return Config.find({});
+  });
+
+  Meteor.publish('collect',function(){
+    return Collect.find({});
+  });
+
+  Meteor.publish('match', function(){
+    return Match.find({});
   });
 
   Meteor.methods({

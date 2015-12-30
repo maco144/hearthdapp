@@ -17,7 +17,6 @@ es5-shim                # ECMAScript 5 compatibility for older browsers.
 ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 insecure                # Allow all DB writes from clients (for prototyping)
-twbs:bootstrap
 accounts-ui
 accounts-password
 reactive-var
@@ -30,3 +29,4 @@ zimme:active-route
 semantic:ui-css
 useraccounts:semantic-ui
 useraccounts:iron-routing
+semantic:ui

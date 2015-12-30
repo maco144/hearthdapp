@@ -44,6 +44,6 @@ Router.route('/logout', function() {
 });
 
 AccountsTemplates.configureRoute('signIn', {
-  name: 'signin',
+  name: 'signIn',
   redirect: '/games'
 });

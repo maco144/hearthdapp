@@ -36,12 +36,33 @@
 
 <template name="main">
 <h2>TEST HERE</h2>
+<form>
+    <input id="files" type="file">
+    <input type="submit" value="submit">
+</form>
+    <a href="{{dataUrl}}" target="_blank">{{name}}</a>
+    <h2>HOST</h2>
+    {{> matchHostForm}}
 </template>
 
 <template name="games">
 <h1>gaMes</h1>
 {{> addPlayerForm}}
 {{> activeq}}
+</template>
+
+<template name="matchHostForm">
+    <div class="panel-body">
+        {{> quickForm collection="Match" id="matchDetails" type="insert" }}
+        <!-- test autoform
+        {{#autoForm collection="Match" id="matchDetails" type=typeAction}}
+            {{> afFormGroup name="GameSelect" type="select-radio-inline" }}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        {{/autoForm}}
+    -->
+    </div>
 </template>
 
 <template name="activeq">
@@ -57,17 +78,6 @@
              </div>
         {{/each}}
     </div>
-</template>
-
-<template name="addPlayerQF">
-    <h2>QF</h2>
-    {{> quickForm
-        id="addToQ"
-        type="insert"
-        collection="Songs"
-        omitFields="name"
-        name=current
-    }}
 </template>
 
 <template name="addPlayerForm">
@@ -105,6 +115,8 @@
   {{/each}}
   </ul>
 </template>
+
+
 
 <template name="profile">
     <h2>PROFILE</h2>
