@@ -35,45 +35,44 @@
   </template>
 
 <template name="main">
-<h2>TEST HERE</h2>
+    <h2>TEST HERE</h2>
+<!--
 <form>
     <input id="files" type="file">
     <input type="submit" value="submit">
 </form>
     <a href="{{dataUrl}}" target="_blank">{{name}}</a>
-    <h2>HOST</h2>
+    <h2>HOST</h2> 
+    {{> hostMatch}}
+-->
+</template>
+
+<template name="hostMatch">
+    <button class="fluid ui button" data-action="modal">Setup Match</button>
+</template>
+
+<template name="hostMatchModal">
     {{> matchHostForm}}
 </template>
 
-<template name="games">
-<h1>gaMes</h1>
-{{> addPlayerForm}}
-{{> activeq}}
+<template name="matchHostForm">
+        {{> quickForm collection="Match" id="matchDetails" type="insert"}}
 </template>
 
-<template name="matchHostForm">
-    <div class="panel-body">
-        {{> quickForm collection="Match" id="matchDetails" type="insert" }}
-        <!-- test autoform
-        {{#autoForm collection="Match" id="matchDetails" type=typeAction}}
-            {{> afFormGroup name="GameSelect" type="select-radio-inline" }}
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create</button>
-            </div>
-        {{/autoForm}}
-    -->
-    </div>
+<template name="games">
+    {{> hostMatch}}
+    <div class="ui horizontal divider">----</div>
+    {{> activeq}}
 </template>
 
 <template name="activeq">
-    <div class="ui horizontal list">
-        IN Q
-        {{#each players}}
+    <div class="ui huge celled horizontal list">
+        {{#each match}}
             <div class="item">
-                <i class="user icon"></i>
+                <img class="ui avatar image" src="/images/games/{{game}}.jpg">
                 <div class="content">
-                    <div class="header">{{name}} </div>
-                     {{stake}}
+                    <div class="header">{{winCondition}} </div>
+                     <i class="diamond icon"></i>{{stake}}
                  </div>
              </div>
         {{/each}}
@@ -81,13 +80,13 @@
 </template>
 
 <template name="addPlayerForm">
-    {{#if currentUser}}
+<!--     {{#if currentUser}}
     <form>
         <input type="number" name="wager" value="1" min="0">
         <input type="submit" value="submit">
         <input type="button" id="unregister" value="Leave">
     </form>
-    <!--
+    
         <div class="ui form">
         <div class="inline fields">
             <div class="field">
@@ -102,9 +101,9 @@
     </fieldset>
     <button type="submit" class="btn btn-primary field">Join</button>
     {{/autoForm}}
--->
+
    
-    {{/if}}
+    {{/if}} -->
 </template>
 
 <template name="gameRequests">

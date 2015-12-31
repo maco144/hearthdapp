@@ -32,25 +32,37 @@ if (Meteor.isClient) {
       return Meteor.users.findOne({_id: Meteor.userId()});
     });
 
-    Template.addPlayerForm.events({
-    'submit form': function(event){
-      console.log("submit button click");
-      event.preventDefault();
-      var wager = Number(event.target.wager.value);
-      Meteor.call('insertToQ', wager);
-    },
-    'click #join': function(event){
-      console.log("submit button click" + event.target + event.name );
-      event.preventDefault();
-      var player = Meteor.userId();
-      var wager = Number(event.target.wager.value);
-      Meteor.call('insertToQ', player, wager);
-    },
-    'click #unregister': function(event){
-      event.preventDefault();
-      Meteor.call('removeFromQ');
-    }
-  });
+    Template.hostMatch.events({
+      'click [data-action="modal"]': function(){
+        SemanticModal.generalModal('hostMatchModal',{}, {modalClass: "ui modal small", id:"matchmodal"});
+      }
+    });
+
+    // Template.hostMatchModal.events({
+    //   'click button': function(){
+    //     alert("that worked");
+    //   }
+    // });
+
+    // Template.addPlayerForm.events({
+    // 'submit form': function(event){
+    //   console.log("submit button click");
+    //   event.preventDefault();
+    //   var wager = Number(event.target.wager.value);
+    //   Meteor.call('insertToQ', wager);
+    // },
+    // 'click #join': function(event){
+    //   console.log("submit button click" + event.target + event.name );
+    //   event.preventDefault();
+    //   var player = Meteor.userId();
+    //   var wager = Number(event.target.wager.value);
+    //   Meteor.call('insertToQ', player, wager);
+    // },
+    // 'click #unregister': function(event){
+    //   event.preventDefault();
+    //   Meteor.call('removeFromQ');
+    // }
+    // });
 
 
   Template.example.helpers({
@@ -85,9 +97,12 @@ if (Meteor.isClient) {
 
 
   Template.activeq.helpers({
-    'players': function(){
-      return Players.find({}, {sort: {stake: -1, name: 1}});
-    }
+    // 'players': function(){
+    //   return Players.find({}, {sort: {stake: -1, name: 1}});
+    // }
+      'match': function(){
+        return Match.find({}, {sort: {game: 1, stake: -1}});
+      }
   });
 
   Template.activeq.events({
@@ -110,26 +125,26 @@ if (Meteor.isClient) {
 
 
 //for testing. currently file upload to a collection
-  Template.main.events({
-  'submit': function(event, template){
-    event.preventDefault();
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-      _.each(template.find('#files').files, function(file) {
-        if(file.size > 1){
-          var reader = new FileReader();
-          reader.onload = function(event) {
-            Collect.insert({
-              name: file.name,
-              type: file.type,
-              dataUrl: reader.result
-            });
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-  }
-});
+  // Template.main.events({
+  // 'submit': function(event, template){
+  //   event.preventDefault();
+  //   if (window.File && window.FileReader && window.FileList && window.Blob) {
+  //     _.each(template.find('#files').files, function(file) {
+  //       if(file.size > 1){
+  //         var reader = new FileReader();
+  //         reader.onload = function(event) {
+  //           Collect.insert({
+  //             name: file.name,
+  //             type: file.type,
+  //             dataUrl: reader.result
+  //           });
+  //         }
+  //         reader.readAsDataURL(file);
+  //       }
+  //     });
+  //   }
+  //   }
+  //   });
 }
 
 if (Meteor.isServer) {
@@ -174,37 +189,37 @@ if (Meteor.isServer) {
   });
 
   Meteor.methods({
-    'insertToQ': function( wager){
-      var currentUserId = this.userId;
-      Players.update({ name: currentUserId }, { $setOnInsert: { name: currentUserId, stake: wager } }, { upsert: true } ); 
-    },
+    // 'insertToQ': function( wager){
+    //   var currentUserId = this.userId;
+    //   Players.update({ name: currentUserId }, { $setOnInsert: { name: currentUserId, stake: wager } }, { upsert: true } ); 
+    // },
 
     'userDisconnected': function(lastUser){
       Players.remove({name: lastUser});
     },
 
-    'removeFromQ': function(){
-      var player = this.userId;
-      Players.remove({name: player});
-    },
+    // 'removeFromQ': function(){
+    //   var player = this.userId;
+    //   Players.remove({name: player});
+    // },
 
     'userLogout': function(){
       return removeFromQ();
     },
 
-    'requestGame': function(playerChallenger, playerChallenged, wager){
-      if(playerChallenger != playerChallenged){
-        GameRequest.insert({
-          player: playerChallenger,
-          challenged: playerChallenged,
-          wager: wager,
-          time: Date.now(),
-          started: false,
-          finished: false
-        });
-        Meteor.call('removeFromQ', playerChallenged);
-        Meteor.call('removeFromQ', playerChallenger);
-      }
-    }
+    // 'requestGame': function(playerChallenger, playerChallenged, wager){
+    //   if(playerChallenger != playerChallenged){
+    //     GameRequest.insert({
+    //       player: playerChallenger,
+    //       challenged: playerChallenged,
+    //       wager: wager,
+    //       time: Date.now(),
+    //       started: false,
+    //       finished: false
+    //     });
+    //     Meteor.call('removeFromQ', playerChallenged);
+    //     Meteor.call('removeFromQ', playerChallenger);
+    //   }
+    // }
   });
 }

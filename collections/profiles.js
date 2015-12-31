@@ -76,6 +76,10 @@ Schema = {};
         }
     });
 
+    Schema.MatchChallenger = new SimpleSchema({
+
+    });
+
     Schema.Match = new SimpleSchema({
         game:{
             type: String,
