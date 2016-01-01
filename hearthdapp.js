@@ -92,11 +92,7 @@ if (Meteor.isClient) {
        if(Meteor.users.findOne({_id: Meteor.userId()}))
             a = "update";
        return a;
-   },
-    'current': function(){
-      var ID = Meteor.users.findOne({_id: Meteor.userId()});
-      return ID;
-    }
+   }
   });
 
   Template.games.helpers({

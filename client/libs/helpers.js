@@ -10,3 +10,9 @@ var matchFormHook = {
 	}
 }
 AutoForm.addHooks('matchDetails', matchFormHook);
+
+Template.activeqMatch.rendered = function() {
+	$('.ui.avatar.image').popup({
+		hoverable: true
+	});
+}

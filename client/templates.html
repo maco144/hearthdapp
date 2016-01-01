@@ -16,8 +16,7 @@
             <a class="{{isActiveRoute 'games'}} item" href="{{pathFor 'games'}}"><i class="users icon"></i> Games</a>
             <a class="{{isActiveRoute 'profile'}} item" href="{{pathFor 'profile'}}"><i class="alarm outline icon"></i> Profile</a>
             {{/if}}
-            <div class="right menu">
-                
+            <div class="right menu">        
                 {{#if currentUser}}
                 {{> CurrentUserMenu}}
                 {{else}}
@@ -59,7 +58,7 @@
 </template>
 
 <template name="matchHostForm">
-        {{> quickForm collection="Match" id="matchDetails" type="insert"}}
+    {{> quickForm collection="Match" id="matchDetails" type="insert"}}
 </template>
 
 <template name="games">
@@ -78,26 +77,28 @@
     <div class="ui huge celled horizontal list">
         {{#each match}}
             <div class="item">
-                <img class="ui avatar image" src="/images/games/{{game}}.jpg">
-                <div class="content">
-                    <div class="header">{{winCondition}} </div>
-                     <i class="diamond icon"></i>{{stake}}
-                 </div>
+                {{> activeqMatch}}
              </div>
         {{/each}}
     </div>
 </template>
 
-<template name="gameRequests">
+<template name="activeqMatch">
+    <img src="/images/games/{{game}}.jpg"  data-title="{{host}}" data-content="{{winCondition}} in {{numberRounds}}" class="ui avatar image" >
+    <div class="content">
+    <div class="header">{{winCondition}} </div>
+     <i class="diamond icon"></i>{{stake}}
+    </div>
+</template>
+
+<!-- <template name="gameRequests">
   <h2>Game Requests</h2>
   <ul>
   {{#each gameRequests}}
     <li>{{player}} vs {{challenged}} for {{wager}} at {{time}}</li>
   {{/each}}
   </ul>
-</template>
-
-
+</template> -->
 
 <template name="profile">
     <h2>PROFILE</h2>
