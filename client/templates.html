@@ -48,7 +48,11 @@
 </template>
 
 <template name="hostMatch">
-    <button class="fluid ui button" data-action="modal">Setup Match</button>
+    {{#if hosting}}
+        <button class="negative fluid ui button" id="unregister"> Cancel Match</button>
+    {{else}}
+        <button class="positive fluid ui button" data-action="modal"> Create Match</button>
+    {{/if}}
 </template>
 
 <template name="hostMatchModal">
@@ -60,9 +64,19 @@
 </template>
 
 <template name="games">
+    {{#if currentUser}}
     {{> hostMatch}}
-    <div class="ui horizontal divider">----</div>
+        {{#with host}}
+            {{> matchChannel}}
+        {{/with}}
     {{> activeq}}
+    {{/if}}    
+
+</template>
+
+<template name="matchChannel">
+    AYOOO
+    <div class="ui horizontal divider">--</div>
 </template>
 
 <template name="activeq">

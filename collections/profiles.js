@@ -81,6 +81,15 @@ Schema = {};
     });
 
     Schema.Match = new SimpleSchema({
+        host: {
+            type: String,
+            regEx: SimpleSchema.RegEx.Id,
+            autoform: {
+                type: "hidden",
+                label: false
+            },
+            autoValue:function(){ return this.userId }
+        },
         game:{
             type: String,
             optional: false,
@@ -110,6 +119,7 @@ Schema = {};
             optional: false,
             autoform: {
                 type: "select",
+                defaultValue: "default",
                 options: function(){
                     return [
                     {label: "Default", value: "default"},

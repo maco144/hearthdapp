@@ -32,21 +32,23 @@ if (Meteor.isClient) {
       return Meteor.users.findOne({_id: Meteor.userId()});
     });
 
+    Template.registerHelper("hosting", function(){
+      return Match.findOne({host: Meteor.userId()});
+    });
+
     Template.hostMatch.events({
       'click [data-action="modal"]': function(){
         SemanticModal.generalModal('hostMatchModal',{}, {modalClass: "ui modal small", id:"matchmodal"});
-      }
+      },
+    'click #unregister': function(event){
+      event.preventDefault();
+      Meteor.call('removeFromQ');
+    }
     });
 
-    // Template.hostMatchModal.events({
-    //   'click button': function(){
-    //     alert("that worked");
-    //   }
-    // });
 
     // Template.addPlayerForm.events({
     // 'submit form': function(event){
-    //   console.log("submit button click");
     //   event.preventDefault();
     //   var wager = Number(event.target.wager.value);
     //   Meteor.call('insertToQ', wager);
@@ -95,6 +97,11 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.games.helpers({
+    'host': function() {
+      return Match.findOne({host: Meteor.userId()});
+    }
+  })
 
   Template.activeq.helpers({
     // 'players': function(){
@@ -105,17 +112,17 @@ if (Meteor.isClient) {
       }
   });
 
-  Template.activeq.events({
-    //challenge opponent by selecting them
-    'click .player': function(){
-      var playerChallenged = this.name;
-      var playerChallenger = Meteor.userId();
-      var wager = this.stake;
-      if(playerChallenger != playerChallenged){
-       Meteor.call('requestGame', playerChallenger, playerChallenged, wager);
-      } 
-    }
-  });
+  // Template.activeq.events({
+  //   //challenge opponent by selecting them
+  //   // 'click .player': function(){
+  //   //   var playerChallenged = this.name;
+  //   //   var playerChallenger = Meteor.userId();
+  //   //   var wager = this.stake;
+  //   //   if(playerChallenger != playerChallenged){
+  //   //    Meteor.call('requestGame', playerChallenger, playerChallenged, wager);
+  //   //   } 
+  //   //   }
+  //   //   });
 
   Template.gameRequests.helpers({
     'gameRequests': function() {
@@ -198,10 +205,10 @@ if (Meteor.isServer) {
       Players.remove({name: lastUser});
     },
 
-    // 'removeFromQ': function(){
-    //   var player = this.userId;
-    //   Players.remove({name: player});
-    // },
+    'removeFromQ': function(){
+      var player = this.userId;
+      Match.remove({host: player});
+    },
 
     'userLogout': function(){
       return removeFromQ();
