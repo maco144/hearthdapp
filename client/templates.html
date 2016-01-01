@@ -29,6 +29,7 @@
             </div>
         </nav>
         <main>
+            {{#if hosting}} {{> matchChannel}} {{/if}}
             {{> yield}}
         </main>
     </div>
@@ -48,11 +49,9 @@
 </template>
 
 <template name="hostMatch">
-    {{#if hosting}}
-        <button class="negative fluid ui button" id="unregister"> Cancel Match</button>
-    {{else}}
-        <button class="positive fluid ui button" data-action="modal"> Create Match</button>
-    {{/if}}
+    {{#unless hosting}}
+    <button class="positive fluid ui button" data-action="modal"> Create Match</button>
+    {{/unless}}
 </template>
 
 <template name="hostMatchModal">
@@ -66,16 +65,12 @@
 <template name="games">
     {{#if currentUser}}
     {{> hostMatch}}
-        {{#with host}}
-            {{> matchChannel}}
-        {{/with}}
     {{> activeq}}
     {{/if}}    
-
 </template>
 
 <template name="matchChannel">
-    AYOOO
+    <button class="negative fluid ui button" id="unregister"> Cancel Match</button>
     <div class="ui horizontal divider">--</div>
 </template>
 
@@ -91,33 +86,6 @@
              </div>
         {{/each}}
     </div>
-</template>
-
-<template name="addPlayerForm">
-<!--     {{#if currentUser}}
-    <form>
-        <input type="number" name="wager" value="1" min="0">
-        <input type="submit" value="submit">
-        <input type="button" id="unregister" value="Leave">
-    </form>
-    
-        <div class="ui form">
-        <div class="inline fields">
-            <div class="field">
-                <input placeholder=1 type="number" name="wager">
-            </div>
-            <div class="ui submit button" id="join">Join</div>
-        </div>
-    </div>
-    {{#autoForm collection="Players" doc=current id="insertToQQ" }}
-    <fieldset>
-        {{> afFieldInput name='stake'}}
-    </fieldset>
-    <button type="submit" class="btn btn-primary field">Join</button>
-    {{/autoForm}}
-
-   
-    {{/if}} -->
 </template>
 
 <template name="gameRequests">

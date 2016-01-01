@@ -39,13 +39,15 @@ if (Meteor.isClient) {
     Template.hostMatch.events({
       'click [data-action="modal"]': function(){
         SemanticModal.generalModal('hostMatchModal',{}, {modalClass: "ui modal small", id:"matchmodal"});
-      },
-    'click #unregister': function(event){
-      event.preventDefault();
-      Meteor.call('removeFromQ');
-    }
+      }
     });
 
+    Template.matchChannel.events({
+      'click #unregister': function(event){
+        event.preventDefault();
+        Meteor.call('removeFromQ');
+    }
+    });
 
     // Template.addPlayerForm.events({
     // 'submit form': function(event){
