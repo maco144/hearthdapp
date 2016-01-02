@@ -15,12 +15,12 @@ if (Meteor.isClient) {
             console.log(userId+" connected");
         }
         else if(lastUser){
-            console.log(lastUser._id+" disconnected");
+            console.log(lastUser+" disconnected");
             // can't use Meteor.user() anymore
             // do something with lastUser (read-only !)
-            Meteor.call("userDisconnected",lastUser._id);
+            Meteor.call("userDisconnected",lastUser);
         }
-        lastUser=Meteor.user();
+        lastUser=Meteor.userId();
     });
   });
     
@@ -36,6 +36,10 @@ if (Meteor.isClient) {
       return Match.findOne({host: Meteor.userId()});
     });
 
+    Template.registerHelper("atMatch", function(){
+      return 
+    });
+
     Template.hostMatch.events({
       'click [data-action="modal"]': function(){
         SemanticModal.generalModal('hostMatchModal',{}, {modalClass: "ui modal small", id:"matchmodal"});
@@ -48,26 +52,6 @@ if (Meteor.isClient) {
         Meteor.call('removeFromQ');
     }
     });
-
-    // Template.addPlayerForm.events({
-    // 'submit form': function(event){
-    //   event.preventDefault();
-    //   var wager = Number(event.target.wager.value);
-    //   Meteor.call('insertToQ', wager);
-    // },
-    // 'click #join': function(event){
-    //   console.log("submit button click" + event.target + event.name );
-    //   event.preventDefault();
-    //   var player = Meteor.userId();
-    //   var wager = Number(event.target.wager.value);
-    //   Meteor.call('insertToQ', player, wager);
-    // },
-    // 'click #unregister': function(event){
-    //   event.preventDefault();
-    //   Meteor.call('removeFromQ');
-    // }
-    // });
-
 
   Template.example.helpers({
     usersOnline:function(){
@@ -95,11 +79,18 @@ if (Meteor.isClient) {
    }
   });
 
+  Template.games.created = function(){
+    this.atMatch = new ReactiveVar(false);
+  };
+
   Template.games.helpers({
     'host': function() {
       return Match.findOne({host: Meteor.userId()});
+    },
+    'atMatch': function() {
+      return Template.instance().atMatch.get();
     }
-  })
+  });
 
   Template.activeq.helpers({
     // 'players': function(){
@@ -110,17 +101,21 @@ if (Meteor.isClient) {
       }
   });
 
-  // Template.activeq.events({
-  //   //challenge opponent by selecting them
-  //   // 'click .player': function(){
-  //   //   var playerChallenged = this.name;
-  //   //   var playerChallenger = Meteor.userId();
-  //   //   var wager = this.stake;
-  //   //   if(playerChallenger != playerChallenged){
-  //   //    Meteor.call('requestGame', playerChallenger, playerChallenged, wager);
-  //   //   } 
-  //   //   }
-  //   //   });
+  Template.activeq.events({
+      // challenge opponent by selecting them
+      // 'click .player': function(){
+      //   var playerChallenged = this.name;
+      //   var playerChallenger = Meteor.userId();
+      //   var wager = this.stake;
+      //   if(playerChallenger != playerChallenged){
+      //    Meteor.call('requestGame', playerChallenger, playerChallenged, wager);
+      //   } 
+      //   }
+      'click .item': function(event, template){
+        alert("worked");
+        template.atMatch.set(true);
+      }
+  });
 
   Template.gameRequests.helpers({
     'gameRequests': function() {
@@ -200,7 +195,7 @@ if (Meteor.isServer) {
     // },
 
     'userDisconnected': function(lastUser){
-      Players.remove({name: lastUser});
+      Match.remove({host: lastUser});
     },
 
     'removeFromQ': function(){
