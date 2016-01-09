@@ -7,6 +7,7 @@ var matchFormHook = {
 	onSuccess: function(insert,result){
 		if(result)
 			$('#generalModal').modal('hide');
+		Session.set("hosting", true);
 	}
 }
 AutoForm.addHooks('matchDetails', matchFormHook);

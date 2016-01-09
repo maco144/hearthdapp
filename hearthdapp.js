@@ -5,9 +5,14 @@ if (Meteor.isClient) {
   Meteor.subscribe("config");         //for UI configs with router
   Meteor.subscribe("collect");        //for testing upload from file
   Meteor.subscribe("match");          //details of match type created by host
+  Meteor.subscribe("gametypes");      //the variety of games displayed
+  Meteor.subscribe("newerth");
+  Meteor.subscribe("warsow");
 
   var lastUser=null;
   Meteor.startup(function(){
+    // Session.setDefault("hosting", false);
+    // Session.setDefault("gameSelected", "Warsow");
     //autorun function for tracking login/logout
     Tracker.autorun(function(){
         var userId=Meteor.userId();
@@ -33,11 +38,16 @@ if (Meteor.isClient) {
     });
 
     Template.registerHelper("hosting", function(){
-      return Match.findOne({host: Meteor.userId()});
+      return Session.get("hosting");
     });
 
-    Template.registerHelper("atMatch", function(){
-      return 
+    Template.registerHelper("gameSelected", function(){
+      return Session.get("gameSelected");
+    });
+
+    Template.registerHelper("gameToCollection", function(){
+      var gs = Session.get("gameSelected");
+      return Mongo.Collection.get(gs.toLowerCase()).find({});
     });
 
     Template.hostMatch.events({
@@ -46,11 +56,15 @@ if (Meteor.isClient) {
       }
     });
 
+    //currently broken cant pass the needed collection
     Template.matchChannel.events({
       'click #unregister': function(event){
         event.preventDefault();
-        Meteor.call('removeFromQ');
-    }
+        Meteor.call('removeFromQ', Session.get("gameSelected"), function(error,result){
+          if(result)
+            Session.set("hosting", false);
+        });
+      }
     });
 
   Template.example.helpers({
@@ -79,78 +93,50 @@ if (Meteor.isClient) {
    }
   });
 
-  Template.games.created = function(){
-    this.atMatch = new ReactiveVar(false);
-  };
-
-  Template.games.helpers({
-    'host': function() {
-      return Match.findOne({host: Meteor.userId()});
-    },
-    'atMatch': function() {
-      return Template.instance().atMatch.get();
+  Template.gamesFooter.events({
+    'click .item': function(event){
+      event.preventDefault();
+      var gameSelected = this.gamename;
+      Session.set("gameSelected",gameSelected);
     }
   });
+
+  Template.gamesFooter.helpers({
+    'gametypes': function(){
+      return GameTypes.find({});
+    }
+  })
 
   Template.activeq.helpers({
     // 'players': function(){
     //   return Players.find({}, {sort: {stake: -1, name: 1}});
     // }
+      // 'match': function(){
+      //   return Match.find({}, {sort: {game: 1, stake: -1}});
+      // }
       'match': function(){
-        return Match.find({}, {sort: {game: 1, stake: -1}});
+        var gs = Session.get("gameSelected");
+        return Mongo.Collection.get(gs.toLowerCase()).find({});
+      //   var gs = Session.get("gameSelected");
+      //   return Mongo.Collection.get(gs).find({},{sort: {stake: -1}});
+      },
+      'gameToCollection': function(){
+        var gs = Session.get("gameSelected");
+        return Mongo.Collection.get(gs.toLowerCase()).find({});
       }
   });
 
   Template.activeq.events({
-      // challenge opponent by selecting them
-      // 'click .player': function(){
-      //   var playerChallenged = this.name;
-      //   var playerChallenger = Meteor.userId();
-      //   var wager = this.stake;
-      //   if(playerChallenger != playerChallenged){
-      //    Meteor.call('requestGame', playerChallenger, playerChallenged, wager);
-      //   } 
-      //   }
       'click .item': function(event, template){
-        alert("worked");
-        template.atMatch.set(true);
+        SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal small", id:"joinmatchmodal"});
       }
   });
-
-  Template.gameRequests.helpers({
-    'gameRequests': function() {
-      return GameRequest.find({});
-    }
-  });
-
-
-//for testing. currently file upload to a collection
-  // Template.main.events({
-  // 'submit': function(event, template){
-  //   event.preventDefault();
-  //   if (window.File && window.FileReader && window.FileList && window.Blob) {
-  //     _.each(template.find('#files').files, function(file) {
-  //       if(file.size > 1){
-  //         var reader = new FileReader();
-  //         reader.onload = function(event) {
-  //           Collect.insert({
-  //             name: file.name,
-  //             type: file.type,
-  //             dataUrl: reader.result
-  //           });
-  //         }
-  //         reader.readAsDataURL(file);
-  //       }
-  //     });
-  //   }
-  //   }
-  //   });
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    Config.remove({});
 
+    Config.remove({});
     Config.insert({
         application       : 'GameGames',
         allowSignin       : true,
@@ -159,21 +145,16 @@ if (Meteor.isServer) {
         allowUploadAvatar : false,
         enableEvents      : false
     });
+
+    GameTypes.remove({});
+    GameTypes.insert({gamename: 'Warsow'}); 
+    GameTypes.insert({gamename: 'Newerth'}); 
+    GameTypes.insert({gamename: 'Other'}); 
   });
-  Meteor.publish('players', function(){
-      return Players.find({}, {sort: {stake: -1, name: 1}});
-  });
+
 
   Meteor.publish('userStatus', function() {
     return Meteor.users.find({ "status.online": true });
-  });
-
-  Meteor.publish('gameRequests', function() {
-    return GameRequest.find({});
-    // return GameRequest.find({$or: [
-     //   { playerChallenger: Meteor.userId() }, 
-     //   { playerChallenged: Meteor.userId() }
-     // ]});
   });
 
   Meteor.publish('config',function(){
@@ -188,38 +169,32 @@ if (Meteor.isServer) {
     return Match.find({});
   });
 
-  Meteor.methods({
-    // 'insertToQ': function( wager){
-    //   var currentUserId = this.userId;
-    //   Players.update({ name: currentUserId }, { $setOnInsert: { name: currentUserId, stake: wager } }, { upsert: true } ); 
-    // },
+  Meteor.publish('gametypes', function(){
+    return GameTypes.find({});
+  });
 
+  Meteor.publish('newerth', function(){
+    return Newerth.find({});
+  });  
+
+  Meteor.publish('warsow', function(){
+    return Warsow.find({});
+  });
+
+  Meteor.methods({
     'userDisconnected': function(lastUser){
       Match.remove({host: lastUser});
     },
 
-    'removeFromQ': function(){
+    'removeFromQ': function(gameSelected){
       var player = this.userId;
-      Match.remove({host: player});
+      var gs = gameSelected.toLowerCase();
+      Mongo.Collection.get(gs).remove({host: player});
+      return true;
     },
 
     'userLogout': function(){
       return removeFromQ();
-    },
-
-    // 'requestGame': function(playerChallenger, playerChallenged, wager){
-    //   if(playerChallenger != playerChallenged){
-    //     GameRequest.insert({
-    //       player: playerChallenger,
-    //       challenged: playerChallenged,
-    //       wager: wager,
-    //       time: Date.now(),
-    //       started: false,
-    //       finished: false
-    //     });
-    //     Meteor.call('removeFromQ', playerChallenged);
-    //     Meteor.call('removeFromQ', playerChallenger);
-    //   }
-    // }
+    }
   });
 }

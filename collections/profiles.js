@@ -49,36 +49,32 @@ Schema = {};
         }
     });
 
-    Schema.GameRequests = new SimpleSchema({
-        player: {
-            type: String
-        },
-        challenger: {
-            type: String
-        },
-        wager: {
-            type: Number
-        }
-    });
+    // Schema.GameRequests = new SimpleSchema({
+    //     player: {
+    //         type: String
+    //     },
+    //     challenger: {
+    //         type: String
+    //     },
+    //     wager: {
+    //         type: Number
+    //     }
+    // });
 
-    Schema.Players = new SimpleSchema({
-        name: {
-            type: String,
-            optional: true
-        },
-        stake: {
-            type: Number,
-            autoform: {
-                afFieldInput:{
-                    type: Number
-                }
-            }
-        }
-    });
-
-    Schema.MatchChallenger = new SimpleSchema({
-
-    });
+    // Schema.Players = new SimpleSchema({
+    //     name: {
+    //         type: String,
+    //         optional: true
+    //     },
+    //     stake: {
+    //         type: Number,
+    //         autoform: {
+    //             afFieldInput:{
+    //                 type: Number
+    //             }
+    //         }
+    //     }
+    // });
 
     Schema.Match = new SimpleSchema({
         host: {
@@ -89,19 +85,6 @@ Schema = {};
                 label: false
             },
             autoValue:function(){ return this.userId }
-        },
-        game:{
-            type: String,
-            optional: false,
-            autoform: {
-                type: "select-radio-inline",
-                options: function(){
-                    return [
-                    {label: "Newerth", value: "newerth"},
-                    {label: "Warsow", value: "warsow"}
-                    ];
-                }
-            }
         },
         stake: {
             type: Number,
@@ -140,3 +123,6 @@ Schema = {};
     SimpleSchema.debug = true;
     Meteor.users.attachSchema(Schema.User);
     Match.attachSchema(Schema.Match);
+    Newerth.attachSchema(Schema.Match);
+    Warsow.attachSchema(Schema.Match);
+

@@ -31,3 +31,5 @@ useraccounts:semantic-ui
 useraccounts:iron-routing
 semantic:ui
 richsilv:semantic-ui-modal
+dburles:collection-helpers
+dburles:mongo-collection-instances

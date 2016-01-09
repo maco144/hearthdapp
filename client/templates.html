@@ -36,15 +36,6 @@
 
 <template name="main">
     <h2>TEST HERE</h2>
-<!--
-<form>
-    <input id="files" type="file">
-    <input type="submit" value="submit">
-</form>
-    <a href="{{dataUrl}}" target="_blank">{{name}}</a>
-    <h2>HOST</h2> 
-    {{> hostMatch}}
--->
 </template>
 
 <template name="hostMatch">
@@ -58,13 +49,18 @@
 </template>
 
 <template name="matchHostForm">
-    {{> quickForm collection="Match" id="matchDetails" type="insert"}}
+    {{> quickForm collection=gameSelected id="matchDetails" type="insert"}}
 </template>
 
 <template name="games">
     {{#if currentUser}}
     {{#unless hosting}}{{> hostMatch}}{{/unless}}
-    {{> activeq}}
+    <div class="pusher">
+        {{> activeq}}
+    </div>
+    <div class="ui sidebar bottom inline visible">
+        {{> gamesFooter}}
+    </div>
     {{/if}}    
 </template>
 
@@ -73,10 +69,19 @@
     <div class="ui horizontal divider">--</div>
 </template>
 
+<template name="gamesFooter">
+    {{#each gametypes}}
+    <a class="item">
+    <i class="home icon"></i>
+        {{gamename}}
+    </a>
+    {{/each}}
+</template>
+
 <template name="activeq">
     <div class="ui huge celled horizontal list">
-        {{#each match}}
-            <div class="item">
+        {{#each gameToCollection}}
+            <div class="item" id="activeqMatch">
                 {{> activeqMatch}}
              </div>
         {{/each}}
@@ -84,21 +89,12 @@
 </template>
 
 <template name="activeqMatch">
-    <img src="/images/games/{{game}}.jpg"  data-title="{{host}}" data-content="{{winCondition}} in {{numberRounds}}" class="ui avatar image" >
+    <img src="/images/games/{{gameSelected}}.jpg"  data-title="{{host}}" data-content="{{winCondition}} in {{numberRounds}}" class="ui avatar image" >
     <div class="content">
     <div class="header">{{winCondition}} </div>
      <i class="diamond icon"></i>{{stake}}
     </div>
 </template>
-
-<!-- <template name="gameRequests">
-  <h2>Game Requests</h2>
-  <ul>
-  {{#each gameRequests}}
-    <li>{{player}} vs {{challenged}} for {{wager}} at {{time}}</li>
-  {{/each}}
-  </ul>
-</template> -->
 
 <template name="profile">
     <h2>PROFILE</h2>
