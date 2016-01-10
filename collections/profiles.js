@@ -49,32 +49,32 @@ Schema = {};
         }
     });
 
-    // Schema.GameRequests = new SimpleSchema({
-    //     player: {
-    //         type: String
-    //     },
-    //     challenger: {
-    //         type: String
-    //     },
-    //     wager: {
-    //         type: Number
-    //     }
-    // });
-
-    // Schema.Players = new SimpleSchema({
-    //     name: {
-    //         type: String,
-    //         optional: true
-    //     },
-    //     stake: {
-    //         type: Number,
-    //         autoform: {
-    //             afFieldInput:{
-    //                 type: Number
-    //             }
-    //         }
-    //     }
-    // });
+    Schema.MatchPlayer = new SimpleSchema({
+        name: {
+            type: String,
+            regEx: SimpleSchema.RegEx.Id,
+            autoform: {
+                type: "hidden",
+                label: false
+            },
+            autoValue:function(){ return this.userId }
+        },
+        team: {
+            type: String,
+            optional: true,
+            autoform: {
+                type: "select",
+                defaultValue: "Select",
+                options: function(){
+                    return [
+                    {label: "Select", value: "Select"},
+                    {label: "1", value: "1"},
+                    {label: "2", value: "2"}
+                    ];
+                }
+            }
+        }
+    });
 
     Schema.Match = new SimpleSchema({
         host: {
@@ -117,6 +117,24 @@ Schema = {};
             optional: false,
             min: 1,
             defaultValue: 1
+        },
+        players: {
+            type: Number,
+            optional: false,
+            min: 1,
+            defaultValue: 1,
+            autoform: {
+                label: false,
+                type: "hidden"
+            }
+        },
+        player: {
+            type: [Schema.MatchPlayer],
+            optional: true,
+            autoform: {
+                type: "hidden",
+                label: false
+            }
         }
     });
 

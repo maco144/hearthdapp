@@ -61,8 +61,10 @@ if (Meteor.isClient) {
       'click #unregister': function(event){
         event.preventDefault();
         Meteor.call('removeFromQ', Session.get("gameSelected"), function(error,result){
-          if(result)
+          if(result){
+            console.log("removed");
             Session.set("hosting", false);
+          }
         });
       }
     });
@@ -93,6 +95,7 @@ if (Meteor.isClient) {
    }
   });
 
+  //choosing/setting the current active game to display 
   Template.gamesFooter.events({
     'click .item': function(event){
       event.preventDefault();
@@ -100,6 +103,14 @@ if (Meteor.isClient) {
       Session.set("gameSelected",gameSelected);
     }
   });
+
+  //how a challenger approves a match
+  Template.joinMatchForm.events({
+    'click submit': function(event){
+      event.preventDefault();
+      Meteor.call("joinMatch",gameSelected, host, team);
+    }
+  })
 
   Template.gamesFooter.helpers({
     'gametypes': function(){
@@ -114,15 +125,15 @@ if (Meteor.isClient) {
       // 'match': function(){
       //   return Match.find({}, {sort: {game: 1, stake: -1}});
       // }
-      'match': function(){
-        var gs = Session.get("gameSelected");
-        return Mongo.Collection.get(gs.toLowerCase()).find({});
+      // 'match': function(){
+      //   var gs = Session.get("gameSelected");
+      //   return Mongo.Collection.get(gs.toLowerCase()).find({});
       //   var gs = Session.get("gameSelected");
       //   return Mongo.Collection.get(gs).find({},{sort: {stake: -1}});
-      },
+      // },
       'gameToCollection': function(){
         var gs = Session.get("gameSelected");
-        return Mongo.Collection.get(gs.toLowerCase()).find({});
+        return Mongo.Collection.get(gs.toLowerCase()).find({}, {sort: {stake: -1}});
       }
   });
 
@@ -182,8 +193,15 @@ if (Meteor.isServer) {
   });
 
   Meteor.methods({
-    'userDisconnected': function(lastUser){
-      Match.remove({host: lastUser});
+    // 'userDisconnected': function(lastUser){
+    //   Match.remove({host: lastUser});
+    // },
+
+    'joinMatch': function(gameSelected, host, team){
+      var player = this.userId;
+      var gs = gameSelected.toLowerCase();
+      Mongo.Collection.get(gs).update({host: host});
+      return true;
     },
 
     'removeFromQ': function(gameSelected){

@@ -73,19 +73,7 @@
   </ul>
 </template> -->
 
-<!-- <template name="joinMatchModal">
-    <div class="three-column-grid">
-        <div class="column">
-            <div class="ui list">
-                <div class="item">
-                    <i class="map marker icon"></i>
-                    <div class="header">Header</div>
-                    <div class="description">Description</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template> -->
+
 
 <!--
 <form>
@@ -97,3 +85,29 @@
     {{> hostMatch}}
 -->
 
+    // Schema.GameRequests = new SimpleSchema({
+    //     player: {
+    //         type: String
+    //     },
+    //     challenger: {
+    //         type: String
+    //     },
+    //     wager: {
+    //         type: Number
+    //     }
+    // });
+
+    // Schema.Players = new SimpleSchema({
+    //     name: {
+    //         type: String,
+    //         optional: true
+    //     },
+    //     stake: {
+    //         type: Number,
+    //         autoform: {
+    //             afFieldInput:{
+    //                 type: Number
+    //             }
+    //         }
+    //     }
+    // });
