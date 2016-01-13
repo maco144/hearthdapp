@@ -139,7 +139,7 @@ if (Meteor.isClient) {
 
   Template.activeq.events({
       'click .item': function(event, template){
-        SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal small", id:"joinmatchmodal"});
+        SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinmatchmodal"});
       }
   });
 }
@@ -200,7 +200,7 @@ if (Meteor.isServer) {
     'joinMatch': function(gameSelected, host, team){
       var player = this.userId;
       var gs = gameSelected.toLowerCase();
-      Mongo.Collection.get(gs).update({host: host});
+      Mongo.Collection.get(gs).update({host: host}, { $setOnInsert: {player: player, team: team}}, {upsert: true, validate: false});
       return true;
     },
 
@@ -216,3 +216,4 @@ if (Meteor.isServer) {
     }
   });
 }
+/// need to use session.equals to remove unneeded renders of session.get

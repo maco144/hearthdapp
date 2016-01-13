@@ -45,6 +45,7 @@
     // }
   });
 
+    //add if not in collection, update if in
       // 'insertToQ': function( wager){
     //   var currentUserId = this.userId;
     //   Players.update({ name: currentUserId }, { $setOnInsert: { name: currentUserId, stake: wager } }, { upsert: true } ); 
