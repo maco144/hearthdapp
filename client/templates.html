@@ -45,7 +45,42 @@
 </template>
 
 <template name="hostMatchModal">
-    {{> matchHostForm}}
+    {{> hostActiveGame}}
+</template>
+
+<template name="hostActiveGame">
+    <div class="ui form">
+    <div class="field">
+    <label>Wager</label>
+    <input type="number" id="matchStake" min="1" max="1000">
+    </div>
+    <div class="field">
+    <label>Solo or Team</label>
+    <select class="ui dropdown" id="matchTeam">
+      <option value="solo">Solo</option>
+      <option value="team">Team</option>
+    </select>
+    </div>
+    <div class="field">
+    <label>Quantifier</label>
+    <select class="ui dropdown" id="matchAchieved">
+      <option value="most">Most</option>
+      <option value="least">Least</option>
+    </select>
+    </div>
+    <div class="field">
+    <label>Objective</label>
+    <select class="ui dropdown" id="matchObjective">
+      <option value="">Objective</option>
+      <option value="kills">Kills</option>
+      <option value="deaths">Deaths</option>
+      <option value="points">Points</option>
+    </select>
+  </div>
+  <div class="ui buttons">
+    <button class="ui button positive" id="matchCreate">Create</button>
+  </div>
+</div>
 </template>
 
 <template name="matchHostForm">
@@ -56,7 +91,7 @@
     {{#if currentUser}}
     {{#unless hosting}}{{> hostMatch}}{{/unless}}
     <div class="pusher">
-        {{> activeq}}
+        {{> activegames}}
     </div>
     <div class="ui sidebar bottom inline visible">
         {{> gamesFooter}}
@@ -64,8 +99,26 @@
     {{/if}}    
 </template>
 
+<template name="activegames">
+    <div class="ui huge celled horizontal list">
+        {{#each gameCollected}}
+            <div class="item" id="activeMatch">
+                {{> activeMatch}}
+             </div>
+        {{/each}}
+    </div>
+</template>
+
+<template name="activeMatch">
+    <img src="/images/games/{{gameName}}.jpg"  data-title="{{host}}" data-content="{{gameDetails.achieved}} in {{gameDetails.objective}} results in {{causeWin}} " class="ui avatar image" >
+    <div class="content">
+    <div class="header">{{gameName}} </div>
+     <i class="diamond icon"></i>{{stake}}
+    </div>
+</template>
+
 <template name="matchChannel">
-    {{#if hosting}}<button class="negative fluid ui button" id="unregister"> Cancel Match</button>{{/if}}
+    {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
     <div class="ui horizontal divider">--</div>
 </template>
 
@@ -78,7 +131,7 @@
     {{/each}}
 </template>
 
-<template name="activeq">
+<!-- <template name="activeq">
     <div class="ui huge celled horizontal list">
         {{#each gameToCollection}}
             <div class="item" id="activeqMatch">
@@ -87,14 +140,14 @@
         {{/each}}
     </div>
 </template>
-
-<template name="activeqMatch">
+ -->
+<!-- <template name="activeqMatch">
     <img src="/images/games/{{gameSelected}}.jpg"  data-title="{{host}}" data-content="{{winCondition}} in {{numberRounds}}" class="ui avatar image" >
     <div class="content">
-    <div class="header">{{winCondition}} </div>
+    <div class="header">{{gameDetails}} </div>
      <i class="diamond icon"></i>{{stake}}
     </div>
-</template>
+</template> -->
 
 <template name="joinMatchModal">
     <div class="ui grid">
