@@ -1,12 +1,10 @@
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
   Meteor.subscribe("players");        //players who have queued
-  Meteor.subscribe("gameRequests");   //when a match is set up
   Meteor.subscribe("config");         //for UI configs with router
   Meteor.subscribe("collect");        //for testing upload from file
-  Meteor.subscribe("match");          //details of match type created by host
   Meteor.subscribe("gametypes");      //the variety of games displayed
-  Meteor.subscribe("activeGames");
+  Meteor.subscribe("activeGames");    //The Game Queue
 
   var lastUser=null;
   Meteor.startup(function(){
@@ -43,15 +41,10 @@ if (Meteor.isClient) {
       return Session.get("gameSelected");
     });
 
-    // Template.registerHelper("gameToCollection", function(){
-    //   var gs = Session.get("gameSelected");
-    //   return Mongo.Collection.get(gs.toLowerCase()).find({});
-    // });
-
     Template.registerHelper("gameCollected", function(){
       var gs = Session.get("gameSelected");
       return ActiveGames.find({gameName: gs});
-    })
+    });
 
     Template.hostMatch.events({
       'click [data-action="modal"]': function(){
@@ -132,44 +125,29 @@ if (Meteor.isClient) {
       event.preventDefault();
       Meteor.call("joinMatch",matchId, team);
     }
-  })
+  });
+
+  //need to find actual ActiveGame by _id
+  Template.joinMatchModal.helpers({
+    'aMatch': function(){
+      return ActiveGames.findOne({_id: Session.get("_matchId")});
+    }
+  });
 
   Template.gamesFooter.helpers({
     'gametypes': function(){
       return GameTypes.find({});
     }
-  })
+  });
 
-  // Template.activeq.helpers({
-  //   // 'players': function(){
-  //   //   return Players.find({}, {sort: {stake: -1, name: 1}});
-  //   // }
-  //     // 'match': function(){
-  //     //   return Match.find({}, {sort: {game: 1, stake: -1}});
-  //     // }
-  //     // 'match': function(){
-  //     //   var gs = Session.get("gameSelected");
-  //     //   return Mongo.Collection.get(gs.toLowerCase()).find({});
-  //     //   var gs = Session.get("gameSelected");
-  //     //   return Mongo.Collection.get(gs).find({},{sort: {stake: -1}});
-  //     // },
-  //     // 'gameToCollection': function(){
-  //     //   var gs = Session.get("gameSelected");
-  //     //   return Mongo.Collection.get(gs.toLowerCase()).find({}, {sort: {stake: -1}});
-  //     // }
-  // });
 
   Template.activegames.events({
     'click .item': function(event){
+      var self = this;
       SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
+      Session.set("_matchId", this._id);
       }
-    });
-
-  // Template.activeq.events({
-  //     'click .item': function(event, template){
-  //       SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinmatchmodal_old"});
-  //     }
-  // });
+  });
 }
 
 if (Meteor.isServer) {
@@ -200,14 +178,6 @@ if (Meteor.isServer) {
     return Config.find({});
   });
 
-  Meteor.publish('collect',function(){
-    return Collect.find({});
-  });
-
-  Meteor.publish('match', function(){
-    return Match.find({});
-  });
-
   Meteor.publish('gametypes', function(){
     return GameTypes.find({});
   });
@@ -216,23 +186,13 @@ if (Meteor.isServer) {
     return ActiveGames.find({});
   });
 
-  // Meteor.publish('newerth', function(){
-  //   return Newerth.find({});
-  // });  
-
-  // Meteor.publish('warsow', function(){
-  //   return Warsow.find({});
-  // });
-
   Meteor.methods({
-    // 'userDisconnected': function(lastUser){
-    //   Match.remove({host: lastUser});
-    // },
+    'userDisconnected': function(lastUser){
+      ActiveGames.remove({host: lastUser});
+    },
+
     'createMatch': function(gameSelected, stake, gameDetails){
       var host = this.userId;
-      // var gameRules = new GameRule();
-      // gameRules.set(gameDetails);
-      // gameRules.save();
       var player = new Player();
       player.set({name: host, team: 1});
       player.save();
@@ -246,6 +206,7 @@ if (Meteor.isServer) {
     'unhostMatch': function(gameSelected){
       var player = ActiveGames.findOne({host: this.userId, gameName: gameSelected});
       player.remove();
+      //cant use .save()??? keeps creating new docs
       return true;
     },
 
@@ -259,22 +220,20 @@ if (Meteor.isServer) {
       return true;
     },
 
-    'joinMatch_old': function(gameSelected, host, team){
-      var player = this.userId;
-      var gs = gameSelected.toLowerCase();
-      Mongo.Collection.get(gs).update({host: host}, { $setOnInsert: {player: player, team: team}}, {upsert: true, validate: false});
+    'leaveMatch': function(matchId){
+      var player = ActiveGames.findOne({_id: matchId, name: this.userId});
+      player.remove();
       return true;
     },
 
-    'removeFromQ': function(gameSelected){
+    'removeFromAll': function(gameSelected){
       var player = this.userId;
-      var gs = gameSelected.toLowerCase();
-      Mongo.Collection.get(gs).remove({host: player});
+      ActiveGames.remove(player);
       return true;
     },
 
     'userLogout': function(){
-      return removeFromQ();
+      return removeFromAll();
     }
   });
 }
