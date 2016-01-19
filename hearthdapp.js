@@ -22,6 +22,9 @@ if (Meteor.isClient) {
         }
         lastUser=Meteor.userId();
     });
+    //move to when games onRendered and change to specific player not host
+    var ag = new ActiveGame();
+    Session.set("_matchId", ActiveGames.findOne({host: Meteor.userId()}));
   });
     
     Template.registerHelper("config", function(){
@@ -37,6 +40,11 @@ if (Meteor.isClient) {
       return ActiveGames.findOne({host: Meteor.userId(), gameName: gs});
     });
 
+    Template.registerHelper("inMatchLobby", function(){
+      var gs = Session.get("gameSelected");
+      // ActiveGames.findOne({gameName: gs, players})
+    });
+
     Template.registerHelper("gameSelected", function(){
       return Session.get("gameSelected");
     });
@@ -44,6 +52,10 @@ if (Meteor.isClient) {
     Template.registerHelper("gameCollected", function(){
       var gs = Session.get("gameSelected");
       return ActiveGames.find({gameName: gs});
+    });
+
+    Template.registerHelper("aMatch", function(){
+      return ActiveGames.findOne({_id: Session.get("_matchId")});
     });
 
     Template.hostMatch.events({
@@ -62,7 +74,9 @@ if (Meteor.isClient) {
           objective: $('#matchObjective').val()
         });
         Meteor.call("createMatch", Session.get("gameSelected"), stake, gameDetails, function(error,result){
-            //error catch needed
+            if(result){ //need error checking still, this to close modal
+               $('#generalModal').modal('hide');  
+            }
         });
       }
     });
@@ -120,19 +134,27 @@ if (Meteor.isClient) {
   });
 
   //how a challenger approves a match
-  Template.joinMatchForm.events({
-    'click submit': function(event){
+  Template.joinMatchModal.events({
+    'click #pickTeam': function(event){    
+      var team = event.target.value;
+      Session.set("onTeam", team);
+    },
+    'click .submit': function(event, template){
       event.preventDefault();
-      Meteor.call("joinMatch",matchId, team);
+      Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
+        if(result) {
+          $('#generalModal').modal('hide'); 
+        } 
+      });
     }
   });
 
-  //need to find actual ActiveGame by _id
-  Template.joinMatchModal.helpers({
-    'aMatch': function(){
-      return ActiveGames.findOne({_id: Session.get("_matchId")});
-    }
-  });
+  // //need to find actual ActiveGame by _id
+  // Template.games.helpers({
+  //   'aMatch': function(){
+  //     return ActiveGames.findOne({_id: Session.get("_matchId")});
+  //   }
+  // });
 
   Template.gamesFooter.helpers({
     'gametypes': function(){
@@ -140,12 +162,10 @@ if (Meteor.isClient) {
     }
   });
 
-
   Template.activegames.events({
     'click .item': function(event){
-      var self = this;
-      SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
       Session.set("_matchId", this._id);
+      SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
       }
   });
 }
@@ -211,9 +231,12 @@ if (Meteor.isServer) {
     },
 
     'joinMatch': function(matchId, team){
-      var MatchToJoin = ActiveGames.findOne({_id: matchid});
+      var MatchToJoin = ActiveGames.findOne({_id: matchId});
       var player = new Player();
+      var dump = MatchToJoin.raw('players');
+      console.log(lodash.find(dump, {name: this.userId}));
       player.set({name: this.userId, team: team});
+      
       player.save();
       MatchToJoin.push('players', player);
       MatchToJoin.save();
@@ -226,7 +249,7 @@ if (Meteor.isServer) {
       return true;
     },
 
-    'removeFromAll': function(gameSelected){
+    'removeFromAll': function(){
       var player = this.userId;
       ActiveGames.remove(player);
       return true;

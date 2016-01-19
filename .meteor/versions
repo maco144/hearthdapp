@@ -55,6 +55,9 @@ iron:middleware-stack@1.0.11
 iron:router@1.0.12
 iron:url@1.0.11
 jagi:astronomy@1.2.10
+jagi:astronomy-timestamp-behavior@1.1.0
+jagi:astronomy-validators@1.1.2
+jagi:reactive-map@2.0.0
 jquery@1.11.4
 lai:collection-extensions@0.2.1_1
 launch-screen@1.0.4
@@ -99,6 +102,7 @@ spacebars@1.0.7
 spacebars-compiler@1.0.7
 srp@1.0.4
 standard-minifiers@1.0.2
+stevezhu:lodash@4.0.0
 templating@1.1.5
 templating-tools@1.0.0
 tracker@1.0.9

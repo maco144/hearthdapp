@@ -7,6 +7,17 @@
   // });
 
 
+// // to close out the Match creation quickform modal 
+// var matchFormHook = {
+//  onSuccess: function(insert,result){
+//    if(result)
+//      $('#generalModal').modal('hide');
+//    Session.set("hosting", true);
+//  }
+// }
+// AutoForm.addHooks('matchDetails', matchFormHook);
+
+
 //for testing. currently file upload to a collection
   // Template.main.events({
   // 'submit': function(event, template){

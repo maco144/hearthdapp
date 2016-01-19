@@ -28,7 +28,6 @@
             </div>
         </nav>
         <main>
-            {{#if hosting}} {{> matchChannel}} {{/if}}
             {{> yield}}
         </main>
     </div>
@@ -85,8 +84,12 @@
 
 <template name="games">
     {{#if currentUser}}
+    {{#if hosting}} {{> matchChannel}} {{/if}}
     {{#unless hosting}}{{> hostMatch}}{{/unless}}
     <div class="pusher">
+        {{#with aMatch}}
+        {{> matchChannel}}
+        {{/with}}
         {{> activegames}}
     </div>
     <div class="ui sidebar bottom inline visible">
@@ -116,6 +119,7 @@
 <template name="matchChannel">
     {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
     <div class="ui horizontal divider">--</div>
+    TEST
 </template>
 
 <template name="gamesFooter">
@@ -129,35 +133,37 @@
 
 <template name="joinMatchModal">
     {{#with aMatch}}
-    <div class="ui grid">
-        <div class="column 16 wide">
-        <div class="row">
-            <i class="diamond icon"></i>{{stake}}<i class="diamond icon"></i>
-        </div>
-        <div class="row">
+    <div class="ui middle aligned three column centered grid">
+        <div class="column">
             <div class="ui list">
                 <div class="item">
                     <i class="map marker icon"></i>
-                    <div class="header">Header</div>
+                    <div class="header">The</div>
                     <div class="description">{{gameDetails.achieved}} in {{gameDetails.objective}} results in {{causeWin}} </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            {{> joinMatchForm}}
+        <div class="column" id="pickTeam">
+        <div class="column">
+            <button class="ui button fluid massive blue" value=1 id="team1">With</button>
+           <!--  {{> joinMatchForm}} -->
         </div>
-    </div>
+        <div class="row">
+            <button class="ui button fluid massive red" value=2 id="team2">Against</button>
+        </div>
+        </div>
+        <div class="column">
+            <div class="ui button fluid massive submit">JOIN UP</div>
+          </div>
     </div>
     {{/with}}
 </template>
 
 <template name="joinMatchForm">
     <div class="ui buttons">
-    <button class="ui button massive blue circular">With</button>
+    <button class="ui button massive blue circular" value=1 id="team1">With</button>
     <div class="or"></div>
-    <button class="ui button massive red circular">Against</button>
-    <div class="divider"></div>
-    <div class="ui bottom attached button submit">JOIN UP</div>
+    <button class="ui button massive red circular" value=2 id="team2">Against</button>
     </div>
 </template>
 

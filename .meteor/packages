@@ -35,3 +35,6 @@ dburles:collection-helpers
 dburles:mongo-collection-instances
 jagi:astronomy
 msavin:mongol
+jagi:astronomy-timestamp-behavior
+jagi:astronomy-validators
+stevezhu:lodash
