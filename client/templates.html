@@ -84,12 +84,9 @@
 
 <template name="games">
     {{#if currentUser}}
-    {{#if hosting}} {{> matchChannel}} {{/if}}
-    {{#unless hosting}}{{> hostMatch}}{{/unless}}
     <div class="pusher">
-        {{#with aMatch}}
-        {{> matchChannel}}
-        {{/with}}
+        {{#unless hosting}}{{> hostMatch}}{{/unless}}
+        {{#if inMatchLobby}}{{> matchChannel}}{{/if}}       
         {{> activegames}}
     </div>
     <div class="ui sidebar bottom inline visible">
@@ -119,7 +116,7 @@
 <template name="matchChannel">
     {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
     <div class="ui horizontal divider">--</div>
-    TEST
+    TEST CHANNEL
 </template>
 
 <template name="gamesFooter">

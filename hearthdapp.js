@@ -42,7 +42,8 @@ if (Meteor.isClient) {
 
     Template.registerHelper("inMatchLobby", function(){
       var gs = Session.get("gameSelected");
-      // ActiveGames.findOne({gameName: gs, players})
+      var test = ActiveGames.findOne({gameName: gs, 'players.name': Meteor.userId()});
+      return (test) ? true: false;
     });
 
     Template.registerHelper("gameSelected", function(){
