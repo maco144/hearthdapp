@@ -234,12 +234,13 @@ if (Meteor.isServer) {
       var MatchToJoin = ActiveGames.findOne({_id: matchId});
       var player = new Player();
       var dump = MatchToJoin.raw('players');
-      console.log(lodash.find(dump, {name: this.userId}));
-      player.set({name: this.userId, team: team});
-      
-      player.save();
-      MatchToJoin.push('players', player);
-      MatchToJoin.save();
+      if(lodash.has(dump, this.userId)){console.log("well well");}
+      if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
+        player.set({name: this.userId, team: team});
+        player.save();
+        MatchToJoin.push('players', player);
+        MatchToJoin.save();
+      }
       return true;
     },
 
