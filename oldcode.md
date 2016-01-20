@@ -17,6 +17,12 @@
 // }
 // AutoForm.addHooks('matchDetails', matchFormHook);
 
+//for profile helper
+<!--     'typeAction': function(){
+      var a = "insert";
+       if(Meteor.users.findOne({_id: Meteor.userId()}))
+            a = "update";
+       return a; -->
 
 //for testing. currently file upload to a collection
   // Template.main.events({
@@ -85,6 +91,16 @@
   </ul>
 </template> -->
 
+<!-- <template name="profile">
+    <div class="panel-body">
+    {{#autoForm collection="Meteor.users" doc=current id="signupForm" type=typeAction}}
+    <fieldset>
+      {{> afObjectField name='profile'}}
+    </fieldset>
+    <button type="submit" class="ui buttons btn btn-primary">Update</button>
+    {{/autoForm}}
+   </div>
+</template> -->
 
 
 <!--

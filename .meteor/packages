@@ -21,8 +21,6 @@ accounts-ui
 accounts-password
 reactive-var
 iron:router
-aldeed:autoform
-aldeed:collection2
 flemay:less-autoprefixer
 fabienb4:autoform-semantic-ui
 zimme:active-route
@@ -38,3 +36,4 @@ msavin:mongol
 jagi:astronomy-timestamp-behavior
 jagi:astronomy-validators
 stevezhu:lodash
+u2622:persistent-session

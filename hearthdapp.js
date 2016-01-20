@@ -23,9 +23,15 @@ if (Meteor.isClient) {
         lastUser=Meteor.userId();
     });
     //move to when games onRendered and change to specific player not host
-    var ag = new ActiveGame();
-    Session.set("_matchId", ActiveGames.findOne({host: Meteor.userId()}));
   });
+
+    Template.games.onRendered(function(){
+      // console.dir(this);
+      // var ag = ActiveGames.findOne({"players.name": Meteor.userId()});
+      // console.dir(ag);
+      // Session.set("_matchId", ag._id);
+      // console.log(Session.get("_matchId"));
+    });
     
     Template.registerHelper("config", function(){
       return Config.findOne({});
@@ -109,28 +115,18 @@ if (Meteor.isClient) {
     }
   });
 
-  //for autoform 
-  Template.profile.helpers({
-    users: function () {
-      return Meteor.users;
-    },
-    userSchema: function () {
-      return Schema.User;
-    },
-    'typeAction': function(){
-      var a = "insert";
-       if(Meteor.users.findOne({_id: Meteor.userId()}))
-            a = "update";
-       return a;
-   }
-  });
-
   //choosing/setting the current active game to display 
   Template.gamesFooter.events({
     'click .item': function(event){
       event.preventDefault();
       var gameSelected = this.gamename;
       Session.set("gameSelected",gameSelected);
+    }
+  });
+
+  Template.gamesFooter.helpers({
+    'gametypes': function(){
+      return GameTypes.find({});
     }
   });
 
@@ -150,16 +146,9 @@ if (Meteor.isClient) {
     }
   });
 
-  // //need to find actual ActiveGame by _id
-  // Template.games.helpers({
-  //   'aMatch': function(){
-  //     return ActiveGames.findOne({_id: Session.get("_matchId")});
-  //   }
-  // });
-
-  Template.gamesFooter.helpers({
-    'gametypes': function(){
-      return GameTypes.find({});
+  Template.games.helpers({
+    'aMatch': function(){
+      return ActiveGames.findOne({_id: Session.get("_matchId")});
     }
   });
 

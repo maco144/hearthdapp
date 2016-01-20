@@ -86,13 +86,32 @@
     {{#if currentUser}}
     <div class="pusher">
         {{#unless hosting}}{{> hostMatch}}{{/unless}}
-        {{#if inMatchLobby}}{{> matchChannel}}{{/if}}       
+        {{#if inMatchLobby}}{{> matchChannel}}
+        {{else}}       
         {{> activegames}}
+        {{/if}}
     </div>
     <div class="ui sidebar bottom inline visible">
         {{> gamesFooter}}
     </div>
     {{/if}}    
+</template>
+
+<template name="matchChannel">
+    {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
+    <div class="ui horizontal divider">--</div>
+     {{> matchTeamDisplay}}
+</template>
+
+<template name="matchTeamDisplay">
+    YO
+    {{#with aMatch}}
+    HI{{stake}}- {{players.name}}
+    {{#each players}}
+        HELLO{{players.name}} --- {{players.team}}
+    {{/each}}
+    {{/with}}
+    {{causeWin}}CAUSE
 </template>
 
 <template name="activegames">
@@ -111,12 +130,6 @@
     <div class="header">{{_id}} </div>
      <i class="diamond icon"></i>{{stake}}
     </div>    
-</template>
-
-<template name="matchChannel">
-    {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
-    <div class="ui horizontal divider">--</div>
-    TEST CHANNEL
 </template>
 
 <template name="gamesFooter">
@@ -166,14 +179,7 @@
 
 <template name="profile">
     <h2>PROFILE</h2>
-    <div class="panel-body">
-    {{#autoForm collection="Meteor.users" doc=current id="signupForm" type=typeAction}}
-    <fieldset>
-      {{> afObjectField name='profile'}}
-    </fieldset>
-    <button type="submit" class="ui buttons btn btn-primary">Update</button>
-    {{/autoForm}}
-   </div>
+
 </template>
 
 <template name="signin">

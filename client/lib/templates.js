@@ -1,1 +1,1 @@
-AutoForm.setDefaultTemplate('semanticUI');
+// AutoForm.setDefaultTemplate('semanticUI');
