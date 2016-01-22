@@ -144,12 +144,20 @@ if (Meteor.isClient) {
   });
 
   Template.activegames.events({
-    'click .item': function(event){
-      Session.set("_matchId", this._id);
-      SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
+    // 'click .item': function(event){  
+    //   Session.set("_matchId", this._id);
+    //   SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
+    // },
+    'click #joinMatchButton': function(event){
+      event.preventDefault();
+      console.dir(this);
+      // Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
+      //   if(result) {
+      //     $('#generalModal').modal('hide'); 
+      //   } 
+      // });
     },
     'mouseover .ui.card': function(){
-      console.dir(this);
       $('.ui.card').dimmer('show');
     },
     'mouseleave .ui.card': function(){
