@@ -38,7 +38,7 @@
 </template>
 
 <template name="hostMatch">
-    {{#unless hosting}}
+    {{#unless inMatchLobby}}
     <button class="positive fluid ui button" data-action="modal">Create Match</button>
     {{/unless}}
 </template>
@@ -104,14 +104,22 @@
 </template>
 
 <template name="matchTeamDisplay">
-    YO
     {{#with aMatch}}
-    HI{{stake}}- {{players.name}}
-    {{#each players}}
-        HELLO{{players.name}} --- {{players.team}}
-    {{/each}}
+    {{stake}}
+        <div class="ui middle aligned list">
+            {{#each players}}
+            <div class="item">
+                <img class="ui avatar image" src="/images/players/avatar.jpg">
+                <div class="content">
+                    <div class="header">
+                        <input type="checkbox">
+                        {{name}} --- {{team}}
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
     {{/with}}
-    {{causeWin}}CAUSE
 </template>
 
 <template name="activegames">
@@ -125,11 +133,35 @@
 </template>
 
 <template name="activeMatch">   
-    <img src="/images/games/{{gameName}}.jpg"  data-title="{{host}}" data-content="{{gameDetails.achieved}} in {{gameDetails.objective}} results in {{causeWin}} " class="ui avatar image" >
+    <div class="ui card blurring segment">
+        <div class="content">
+            <div class="header">{{host}} -- {{stake}}</div>
+        </div>
+        <div class="content">
+            <h4 class="ui sub header">Rules</h4>
+            <div class="ui small feed">
+                
+            </div>
+        </div>
+        <div class="extra content">
+            {{gameRules}}
+        </div>
+        {{> gameJoinDim}}
+    </div>
+</template>
+
+<template name="gameJoinDim">
+    <div class="ui">
+        AHOOO
+    </div>
+</template>
+
+<template name="matchRules">
     <div class="content">
-    <div class="header">{{_id}} </div>
-     <i class="diamond icon"></i>{{stake}}
-    </div>    
+        <div class="summary">
+            {{gameDetails.achieved}} in {{gameDetails.objective}} results in {{causeWin}} 
+        </div>
+    </div>
 </template>
 
 <template name="gamesFooter">
@@ -142,7 +174,7 @@
 </template>
 
 <template name="joinMatchModal">
-    {{#with aMatch}}
+    {{#with jMatch}}
     <div class="ui middle aligned three column centered grid">
         <div class="column">
             <div class="ui list">

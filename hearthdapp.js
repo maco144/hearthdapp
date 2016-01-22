@@ -22,16 +22,7 @@ if (Meteor.isClient) {
         }
         lastUser=Meteor.userId();
     });
-    //move to when games onRendered and change to specific player not host
   });
-
-    Template.games.onRendered(function(){
-      // console.dir(this);
-      // var ag = ActiveGames.findOne({"players.name": Meteor.userId()});
-      // console.dir(ag);
-      // Session.set("_matchId", ag._id);
-      // console.log(Session.get("_matchId"));
-    });
     
     Template.registerHelper("config", function(){
       return Config.findOne({});
@@ -62,7 +53,7 @@ if (Meteor.isClient) {
     });
 
     Template.registerHelper("aMatch", function(){
-      return ActiveGames.findOne({_id: Session.get("_matchId")});
+      return ActiveGames.findOne({gameName: Session.get("gameSelected"), "players.name": Meteor.userId()});
     });
 
     Template.hostMatch.events({
@@ -146,8 +137,8 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.games.helpers({
-    'aMatch': function(){
+  Template.joinMatchModal.helpers({
+    'jMatch': function(){
       return ActiveGames.findOne({_id: Session.get("_matchId")});
     }
   });
@@ -156,7 +147,29 @@ if (Meteor.isClient) {
     'click .item': function(event){
       Session.set("_matchId", this._id);
       SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
-      }
+    },
+    'mouseover .ui.card': function(){
+      console.dir(this);
+      $('.ui.card').dimmer('show');
+    },
+    'mouseleave .ui.card': function(){
+      $('.ui.card').dimmer('hide');
+    }
+  });
+
+  Template.matchChannel.helpers({
+    'readyUp': function(){
+      var isReady = this.players.readyUp;
+      console.log(isReady+"susready");
+      console.log(this);
+      return (isReady) ? "checked" : "";
+    }
+  });
+
+  Template.matchChannel.events({
+    'change [type=checkbox]': function(){
+      console.log("checkbox");
+    }
   });
 }
 
@@ -222,10 +235,10 @@ if (Meteor.isServer) {
 
     'joinMatch': function(matchId, team){
       var MatchToJoin = ActiveGames.findOne({_id: matchId});
-      var player = new Player();
       var dump = MatchToJoin.raw('players');
       if(lodash.has(dump, this.userId)){console.log("well well");}
       if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
+        var player = new Player();
         player.set({name: this.userId, team: team});
         player.save();
         MatchToJoin.push('players', player);
