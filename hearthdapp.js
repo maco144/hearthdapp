@@ -244,7 +244,7 @@ if (Meteor.isServer) {
     'joinMatch': function(matchId, team){
       var MatchToJoin = ActiveGames.findOne({_id: matchId});
       var dump = MatchToJoin.raw('players');
-      if(lodash.has(dump, this.userId)){console.log("well well");}
+      //already in check (works?)  if(lodash.has(dump, this.userId)){console.log("well well");}
       if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
         var player = new Player();
         player.set({name: this.userId, team: team});
