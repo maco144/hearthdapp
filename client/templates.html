@@ -60,6 +60,14 @@
       <option value="team">Team</option>
     </select>
     </div>
+    <div class="field hidden">
+        <label>Number of Teams </label>
+            <input type="number" id="matchTeamNumber" min="2" max="6">
+    </div>
+    <div class="field hidden">
+        <label>Players per side</label>
+            <input type="number" id="matchPlayersAside" min="1" max="10">
+    </div>
     <div class="field">
     <label>Quantifier</label>
     <select class="ui dropdown" id="matchAchieved">
@@ -106,13 +114,13 @@
 <template name="matchTeamDisplay">
     {{#with aMatch}}
     {{stake}}
-        <div class="ui middle aligned list">
+        <div class="ui middle aligned list" id="readyUpPlayers">
             {{#each players}}
             <div class="item">
                 <img class="ui avatar image" src="/images/players/avatar.jpg">
                 <div class="content">
                     <div class="header">
-                        <input type="checkbox">
+                        <input type="checkbox" class="checkem">
                         {{name}} --- {{team}}
                     </div>
                 </div>

@@ -69,7 +69,9 @@ if (Meteor.isClient) {
         var gameDetails = ({
           winning: $('#matchTeam').val(),
           achieved: $('#matchAchieved').val(),
-          objective: $('#matchObjective').val()
+          objective: $('#matchObjective').val(),
+          teamsNumber: $('#matchTeamNumber').val(),
+          teamSize: $('#matchPlayersAside').val()
         });
         Meteor.call("createMatch", Session.get("gameSelected"), stake, gameDetails, function(error,result){
             if(result){ //need error checking still, this to close modal
@@ -151,11 +153,12 @@ if (Meteor.isClient) {
     'click #joinMatchButton': function(event){
       event.preventDefault();
       console.dir(this);
-      // Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
-      //   if(result) {
-      //     $('#generalModal').modal('hide'); 
-      //   } 
-      // });
+      var team = event.target.value;
+      Meteor.call("joinMatch",this._id, 2, function(error,result){
+        if(result) {
+          $('#generalModal').modal('hide'); 
+        } 
+      });
     },
     'mouseover .ui.card': function(){
       $('.ui.card').dimmer('show');
@@ -175,8 +178,21 @@ if (Meteor.isClient) {
   });
 
   Template.matchChannel.events({
-    'change [type=checkbox]': function(){
-      console.log("checkbox");
+    'change [type=checkbox]': function(event){
+      var checked = event.currentTarget.checked;
+      var name = this.name;
+      console.log(this);
+      console.log(checked);
+      Meteor.call("readyUp", checked, function(error,result){
+
+      });
+      // var readyUp = {};
+      // readyUp[name] = checked;
+      // Session.set("readyUp", readyUp);
+      // console.log(Session.get("readyUp"));
+      // if($('.checkem:checked').length == $('.checkem').length){
+      //   console.log("READUYOO");
+      // }
     }
   });
 }
@@ -225,8 +241,8 @@ if (Meteor.isServer) {
     'createMatch': function(gameSelected, stake, gameDetails){
       var host = this.userId;
       var player = new Player();
+      console.log(host+"host");
       player.set({name: host, team: 1});
-      player.save();
       var newMatch = new ActiveGame();
       newMatch.set({gameName: gameSelected, host: host, stake: stake, gameDetails: gameDetails});
       newMatch.push('players', player);
@@ -248,7 +264,6 @@ if (Meteor.isServer) {
       if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
         var player = new Player();
         player.set({name: this.userId, team: team});
-        player.save();
         MatchToJoin.push('players', player);
         MatchToJoin.save();
       }
@@ -258,6 +273,12 @@ if (Meteor.isServer) {
     'leaveMatch': function(matchId){
       var player = ActiveGames.findOne({_id: matchId, name: this.userId});
       player.remove();
+      return true;
+    },
+
+    'readyUp': function(checked){
+      var player = new Player();
+      
       return true;
     },
 
