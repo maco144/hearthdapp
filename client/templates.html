@@ -113,15 +113,16 @@
 
 <template name="matchTeamDisplay">
     {{#with aMatch}}
-    {{stake}}
+    <input type="hidden" id="matchId" value={{_id}}>
+    {{stake}}----{{_id}}
         <div class="ui middle aligned list" id="readyUpPlayers">
             {{#each players}}
             <div class="item">
                 <img class="ui avatar image" src="/images/players/avatar.jpg">
                 <div class="content">
                     <div class="header">
-                        <input type="checkbox" class="checkem">
-                        {{name}} --- {{team}}
+                        {{name}} --- {{team}} --- {{_id}}
+                        <input type="checkbox" class="checkem" >
                     </div>
                 </div>
             </div>

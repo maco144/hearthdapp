@@ -1,6 +1,6 @@
 if (Meteor.isClient) {
   Meteor.subscribe('userStatus');
-  Meteor.subscribe("players");        //players who have queued
+  // Meteor.subscribe("players");        //players who have queued
   Meteor.subscribe("config");         //for UI configs with router
   Meteor.subscribe("collect");        //for testing upload from file
   Meteor.subscribe("gametypes");      //the variety of games displayed
@@ -152,7 +152,6 @@ if (Meteor.isClient) {
     // },
     'click #joinMatchButton': function(event){
       event.preventDefault();
-      console.dir(this);
       var team = event.target.value;
       Meteor.call("joinMatch",this._id, 2, function(error,result){
         if(result) {
@@ -169,21 +168,22 @@ if (Meteor.isClient) {
   });
 
   Template.matchChannel.helpers({
-    'readyUp': function(){
-      var isReady = this.players.readyUp;
-      console.log(isReady+"susready");
-      console.log(this);
-      return (isReady) ? "checked" : "";
-    }
+    // 'readyUp': function(arg){
+    //   var isReady = this.players.readyUp;
+    //   console.log(isReady+"susready");
+    //   console.log(this);
+    //   return (isReady) ? "checked" : "";
+
+    
+
   });
 
-  Template.matchChannel.events({
-    'change [type=checkbox]': function(event){
+  Template.matchTeamDisplay.events({
+    'change [type=checkbox]': function(event, template){
       var checked = event.currentTarget.checked;
       var name = this.name;
-      console.log(this);
-      console.log(checked);
-      Meteor.call("readyUp", checked, function(error,result){
+      var matchId = template.find('#matchId');
+      Meteor.call("readySet", matchId.value, name, checked, function(error,result){
 
       });
       // var readyUp = {};
@@ -241,7 +241,6 @@ if (Meteor.isServer) {
     'createMatch': function(gameSelected, stake, gameDetails){
       var host = this.userId;
       var player = new Player();
-      console.log(host+"host");
       player.set({name: host, team: 1});
       var newMatch = new ActiveGame();
       newMatch.set({gameName: gameSelected, host: host, stake: stake, gameDetails: gameDetails});
@@ -276,9 +275,8 @@ if (Meteor.isServer) {
       return true;
     },
 
-    'readyUp': function(checked){
-      var player = new Player();
-      
+    'readySet': function(matchId, name, checked){
+      ActiveGames.update({_id: matchId, "players.name": name}, { $set: { "players.$.readyUp": checked}});
       return true;
     },
 
