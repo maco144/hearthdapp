@@ -60,11 +60,11 @@
       <option value="team">Team</option>
     </select>
     </div>
-    <div class="field hidden">
+    <div class="field hidden" id="teamshidden">
         <label>Number of Teams </label>
             <input type="number" id="matchTeamNumber" min="2" max="6">
     </div>
-    <div class="field hidden">
+    <div class="field">
         <label>Players per side</label>
             <input type="number" id="matchPlayersAside" min="1" max="10">
     </div>
@@ -107,6 +107,8 @@
 
 <template name="matchChannel">
     {{#if hosting}}<button class="negative fluid ui button" id="unhostMatch"> Cancel Match</button>{{/if}}
+    {{#unless hosting}}<button class="negative fluid ui button" id="leaveMatch"> Leave Match</button>
+    {{/unless}}
     <div class="ui horizontal divider">--</div>
      {{> matchTeamDisplay}}
 </template>
@@ -179,7 +181,7 @@
     {{/each}}
 </template>
 
-<template name="joinMatchModal">
+<!-- <template name="joinMatchModal">
     {{#with jMatch}}
     <div class="ui middle aligned three column centered grid">
         <div class="column">
@@ -213,7 +215,7 @@
     <div class="or"></div>
     <button class="ui button massive red circular" value=2 id="team2">Against</button>
     </div>
-</template>
+</template> -->
 
 <template name="profile">
     <h2>PROFILE</h2>

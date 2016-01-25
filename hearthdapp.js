@@ -62,6 +62,10 @@ if (Meteor.isClient) {
       }
     });
 
+    Template.hostActiveGame.onRendered( function(){
+      document.getElementById("teamshidden").style.display="none";
+    });
+
     Template.hostActiveGame.events({
       'click #matchCreate': function(event){
         event.preventDefault();
@@ -78,8 +82,15 @@ if (Meteor.isClient) {
                $('#generalModal').modal('hide');  
             }
         });
+      },
+      'change #matchTeam': function(event){
+        var matchTeam = event.currentTarget.value;
+          if(matchTeam === "solo") document.getElementById('teamshidden').style.display="none";
+          else if (matchTeam === "team") {document.getElementById("teamshidden").style.display="block";}
+          else{}
       }
     });
+
     
     Template.matchChannel.events({
       'click #unhostMatch': function(event){
@@ -88,9 +99,11 @@ if (Meteor.isClient) {
             //error checking
         });
       },
-      'click #unregister': function(event){
+      'click #leaveMatch': function(event, template){
         event.preventDefault();
-        Meteor.call('removeFromQ', Session.get("gameSelected"), function(error,result){
+        console.log(template);
+        var matchId = template.find('#matchId');
+        Meteor.call('leaveMatch', matchId.value, function(error,result){
           if(result){
             Session.set("hosting", false);
           }
@@ -124,26 +137,26 @@ if (Meteor.isClient) {
   });
 
   //how a challenger approves a match
-  Template.joinMatchModal.events({
-    'click #pickTeam': function(event){    
-      var team = event.target.value;
-      Session.set("onTeam", team);
-    },
-    'click .submit': function(event, template){
-      event.preventDefault();
-      Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
-        if(result) {
-          $('#generalModal').modal('hide'); 
-        } 
-      });
-    }
-  });
+  // Template.joinMatchModal.events({
+  //   'click #pickTeam': function(event){    
+  //     var team = event.target.value;
+  //     Session.set("onTeam", team);
+  //   },
+  //   'click .submit': function(event, template){
+  //     event.preventDefault();
+  //     Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
+  //       if(result) {
+  //         $('#generalModal').modal('hide'); 
+  //       } 
+  //     });
+  //   }
+  // });
 
-  Template.joinMatchModal.helpers({
-    'jMatch': function(){
-      return ActiveGames.findOne({_id: Session.get("_matchId")});
-    }
-  });
+  // Template.joinMatchModal.helpers({
+  //   'jMatch': function(){
+  //     return ActiveGames.findOne({_id: Session.get("_matchId")});
+  //   }
+  // });
 
   Template.gameJoinDim.onRendered( function(){
     var teamnum = this.data.gameDetails.teamsNumber
@@ -193,7 +206,7 @@ if (Meteor.isClient) {
     'change [type=checkbox]': function(event, template){
       var checked = event.currentTarget.checked;
       var name = this.name;
-      var matchId = template.find('#matchId');
+      var matchId = template.find('#matchId');    
       Meteor.call("readySet", matchId.value, name, checked, function(error,result){
 
       });
@@ -281,8 +294,7 @@ if (Meteor.isServer) {
     },
 
     'leaveMatch': function(matchId){
-      var player = ActiveGames.findOne({_id: matchId, name: this.userId});
-      player.remove();
+      ActiveGames.update({_id: matchId}, { $pull: { "players": { name:this.userId}}});
       return true;
     },
 
@@ -293,7 +305,6 @@ if (Meteor.isServer) {
 
     'removeFromAll': function(){
       var player = this.userId;
-      ActiveGames.remove(player);
       return true;
     },
 
