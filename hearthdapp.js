@@ -145,6 +145,28 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.gameJoinDim.onRendered( function(){
+    var teamnum = this.data.gameDetails.teamsNumber
+    var loc = document.getElementById("joinMatchButtons");
+    for(i=1; i <= teamnum;i++){
+      var newButton = document.createElement("BUTTON");
+      newButton.setAttribute("value", i);
+      var t = document.createTextNode("Team " + i);
+      newButton.appendChild(t);
+      loc.appendChild(newButton);
+    }
+  });
+
+  Template.gameJoinDim.events({
+    'click #joinMatchButtons': function(event){
+      event.preventDefault();
+      var team = event.target.value;
+      Meteor.call("joinMatch", this._id, team, function(error,result){
+
+      });
+    }
+  });
+
   Template.activegames.events({
     // 'click .item': function(event){  
     //   Session.set("_matchId", this._id);
@@ -165,17 +187,6 @@ if (Meteor.isClient) {
     'mouseleave .ui.card': function(){
       $('.ui.card').dimmer('hide');
     }
-  });
-
-  Template.matchChannel.helpers({
-    // 'readyUp': function(arg){
-    //   var isReady = this.players.readyUp;
-    //   console.log(isReady+"susready");
-    //   console.log(this);
-    //   return (isReady) ? "checked" : "";
-
-    
-
   });
 
   Template.matchTeamDisplay.events({
@@ -292,3 +303,4 @@ if (Meteor.isServer) {
   });
 }
 /// need to use session.equals to remove unneeded renders of session.get
+ 
