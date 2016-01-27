@@ -104,9 +104,7 @@ if (Meteor.isClient) {
         console.log(template);
         var matchId = template.find('#matchId');
         Meteor.call('leaveMatch', matchId.value, function(error,result){
-          if(result){
-            Session.set("hosting", false);
-          }
+
         });
       }
     });
@@ -136,27 +134,6 @@ if (Meteor.isClient) {
     }
   });
 
-  //how a challenger approves a match
-  // Template.joinMatchModal.events({
-  //   'click #pickTeam': function(event){    
-  //     var team = event.target.value;
-  //     Session.set("onTeam", team);
-  //   },
-  //   'click .submit': function(event, template){
-  //     event.preventDefault();
-  //     Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
-  //       if(result) {
-  //         $('#generalModal').modal('hide'); 
-  //       } 
-  //     });
-  //   }
-  // });
-
-  // Template.joinMatchModal.helpers({
-  //   'jMatch': function(){
-  //     return ActiveGames.findOne({_id: Session.get("_matchId")});
-  //   }
-  // });
 
   Template.gameJoinDim.onRendered( function(){
     var teamnum = this.data.gameDetails.teamsNumber
@@ -185,21 +162,35 @@ if (Meteor.isClient) {
     //   Session.set("_matchId", this._id);
     //   SemanticModal.generalModal('joinMatchModal',{}, {modalClass: "ui modal", id:"joinMatchmModal"});
     // },
-    'click #joinMatchButton': function(event){
-      event.preventDefault();
-      var team = event.target.value;
-      Meteor.call("joinMatch",this._id, 2, function(error,result){
-        if(result) {
-          $('#generalModal').modal('hide'); 
-        } 
-      });
-    },
+    // 'click #joinMatchButton': function(event){
+    //   event.preventDefault();
+    //   var team = event.target.value;
+    //   Meteor.call("joinMatch",this._id, 2, function(error,result){
+    //     if(result) {
+    //       $('#generalModal').modal('hide'); 
+    //     } 
+    //   });
+    // },
     'mouseover .ui.card': function(){
       $('.ui.card').dimmer('show');
     },
     'mouseleave .ui.card': function(){
       $('.ui.card').dimmer('hide');
     }
+  });
+
+  Template.matchTeamDisplay.helpers({
+    'isChecked': function(parentContext){
+      // var matchId = template.find('#matchId');
+      console.log("PARENT CONTEXT ISCHECKED");
+      console.log(parentContext);
+      // ActiveGames.findOne({_id: matchId});
+      return true;
+    },
+    'log': function(){
+      console.log(this);
+    }
+
   });
 
   Template.matchTeamDisplay.events({

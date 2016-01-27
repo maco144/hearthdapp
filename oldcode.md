@@ -139,3 +139,25 @@
     //         }
     //     }
     // });
+
+      //how a challenger approves a match
+  // Template.joinMatchModal.events({
+  //   'click #pickTeam': function(event){    
+  //     var team = event.target.value;
+  //     Session.set("onTeam", team);
+  //   },
+  //   'click .submit': function(event, template){
+  //     event.preventDefault();
+  //     Meteor.call("joinMatch",this._id, Session.get("onTeam"), function(error,result){
+  //       if(result) {
+  //         $('#generalModal').modal('hide'); 
+  //       } 
+  //     });
+  //   }
+  // });
+
+  // Template.joinMatchModal.helpers({
+  //   'jMatch': function(){
+  //     return ActiveGames.findOne({_id: Session.get("_matchId")});
+  //   }
+  // });
