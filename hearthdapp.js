@@ -184,10 +184,13 @@ if (Meteor.isClient) {
       // var matchId = template.find('#matchId');
       console.log("PARENT CONTEXT ISCHECKED");
       console.log(parentContext);
-      // ActiveGames.findOne({_id: matchId});
+      console.log(this.name);
+      var test = ActiveGames.findOne({_id: parentContext._id, "players.name": this.name}, {fields: {"players.readyUp": 1}});
+      console.log(test);
       return true;
     },
     'log': function(){
+      console.log("CALLLOG");
       console.log(this);
     }
 
