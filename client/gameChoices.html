@@ -1,0 +1,8 @@
+<template name="gameChoices">
+    {{#each gametypes}}
+        <a class="item" {{b "click: gameSelected(this.gamename)"}}>
+        {{gamename}}
+        </a>
+    {{/each}}
+    {{gameSelected}}
+</template>

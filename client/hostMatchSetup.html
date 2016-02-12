@@ -1,0 +1,35 @@
+<template name="hostMatchSetup">
+    <div class="ui form">
+        {{> uiNumber ref='matchStake' label="Wager" min=1 max=1000 value=1}}
+
+        <div class="field">
+        <label>Solo or Team</label>
+        <select class="ui dropdown" {{b "options: matchTeam, value: selectTeam, optionsValue: id, optionsText: name"}}> </select>
+        </div>
+        
+        {{> uiNumber ref='matchTeamNumber' label="Number of Teams" min=2 max=6 value=2 visible=isTeamGame}}
+
+        {{> uiNumber ref='matchPlayersAside' label="Players per side" min=1 max=10 value=1}}
+
+        <div class="field">
+        <label>Quantifier</label>
+        <select class="ui dropdown" {{b "options: matchAchieved, value: selectAchieved, optionsValue: id, optionsText: name"}}> </select>
+        </div>
+
+        <div class="field">
+        <label>Objective</label>
+        <select class="ui dropdown" {{b "options: matchObjective, value: selectObjective, optionsValue: id, optionsText: name"}}> </select>
+        </div>
+
+        <div class="ui buttons">
+        <button class="ui button positive" {{b "click: matchCreate"}}>Create</button>
+        </div>
+    </div>
+</template>
+
+<template name="uiNumber">
+    <div class="field" {{b "visible:visible"}}>
+        <label>{{label}}</label>
+        <input type="number" {{b "value: value"}} min={{min}} max={{max}}>
+    </div>
+</template>

@@ -1,0 +1,7 @@
+<template name="hostMatch">
+    <button class="positive fluid ui button" data-action="modal" {{b "unless: parent.inMatchChannel, click: openMatchSetup"}}>Create Match</button>
+</template>
+
+<template name="hostMatchModal">
+    {{> hostMatchSetup}}
+</template>

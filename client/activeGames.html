@@ -1,0 +1,41 @@
+
+<template name="activeGames">
+    <div class="ui huge celled horizontal list">
+        {{#each gameCollection}}
+            <div class="item" id="activeMatch">
+                {{> activeGame}}
+             </div>
+        {{/each}}
+    </div>
+</template>
+
+<template name="activeGame">   
+    <div class="ui card blurring segment" {{b "hover: hovering, dimmer: hovering"}}>
+        <div class="content">
+            <div class="header">{{host}} -- {{stake}}</div>
+        </div>
+        <div class="content">
+            <h4 class="ui sub header">Rules</h4>
+            <div class="ui small feed">
+                
+            </div>
+        </div>
+        <div class="extra content">
+            {{gameRules}}
+        </div>
+        {{> gameJoinDim}}
+    </div>
+</template>
+
+<template name="gameJoinDim">
+    <div class="ui dimmer">
+        <div class="content">
+            <div class="center">
+                <h2 class="ui inverted header">Join</h2>
+                {{#each teams}}
+                    <div class="ui button" {{b "text: this, click: joinMatchButton(this)"}}></div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</template>
