@@ -5,7 +5,7 @@ Template.matchChannel.viewmodel({
 	winner: '',
 	readyUp: '',
 	unhostMatch: function(){
-		Meteor.call('unhostMatch', this.gameSelected(), function(error,result){
+		Meteor.call('unhostMatch', this.matchID(), function(error,result){
             //error checking
         });
 	},

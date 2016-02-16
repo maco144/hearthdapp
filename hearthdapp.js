@@ -31,18 +31,6 @@ if (Meteor.isClient) {
       return Meteor.users.findOne({_id: Meteor.userId()});
     });
 
-    // Template.registerHelper("gameSelected", function(){
-    //   return Session.get("gameSelected");
-    // });
-
-    // Template.registerHelper("gameCollected", function(){
-    //   var gs = Session.get("gameSelected");
-    //   return ActiveGames.find({gameName: gs});
-    // });
-
-    // Template.registerHelper("aMatch", function(){
-    //   return ActiveGames.findOne({gameName: Session.get("gameSelected"), "players.name": Meteor.userId()});
-    // });
 
   Template.example.helpers({
     usersOnline:function(){
@@ -132,20 +120,10 @@ if (Meteor.isServer) {
     },
 
     'createMatch': function(gameSelected, stake, gameDetails){
-      var host = this.userId;
-      var player = new Player();
-      player.set({_id: host, name: host, team: 1, readyUp: true, winner: false});
       var newMatch = new ActiveGame();
-      newMatch.set({gameName: gameSelected, host: host, stake: stake, gameDetails: gameDetails});
-      newMatch.push('players', player);
+      newMatch.set({gameName: gameSelected, host: this.userId, stake: stake, gameDetails: gameDetails});
       newMatch.save();
-      return true;
-    },
-
-    'unhostMatch': function(gameSelected){
-      var player = ActiveGames.findOne({host: this.userId, gameName: gameSelected});
-      player.remove();
-      //cant use .save()??? keeps creating new docs
+      Meteor.call('joinMatch',newMatch.get('_id'),1); //add host to game
       return true;
     },
 
@@ -155,7 +133,7 @@ if (Meteor.isServer) {
       //already in check (works?)  if(lodash.has(dump, this.userId)){console.log("well well");}
       if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
         var player = new Player();
-        player.set({_id: this.userId, name: this.userId, team: team});
+        player.set({_id: this.userId, team: team});
         MatchToJoin.push('players', player);
         MatchToJoin.save();
         return true;
@@ -163,13 +141,20 @@ if (Meteor.isServer) {
       return false;
     },
 
+    'unhostMatch': function(matchId){
+      var player = ActiveGames.findOne({_id: matchId});
+      player.remove();
+      //cant use .save()??? keeps creating new docs
+      return true;
+    },
+
     'leaveMatch': function(matchId){
       ActiveGames.update({_id: matchId}, { $pull: { "players": { name:this.userId}}});
       return true;
     },
 
-    'readySet': function(matchId, name, checked){
-      ActiveGames.update({_id: matchId, "players.name": name}, { $set: { "players.$.readyUp": checked}});
+    'readySet': function(matchId, checked){
+      ActiveGames.update({_id: matchId, "players.name": this.userId}, { $set: { "players.$.readyUp": checked}});
       return true;
     },
 
@@ -183,5 +168,3 @@ if (Meteor.isServer) {
     }
   });
 }
-/// need to use session.equals to remove unneeded renders of session.get
- 
