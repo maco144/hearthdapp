@@ -1,26 +1,29 @@
 <template name="matchChannel">
+    {{#with aMatch}}
     <button class="negative fluid ui button" {{b "visible: parent.hostingMatch, click: unhostMatch"}}> Cancel Match</button>
     <button class="negative fluid ui button" {{b "unless: parent.hostingMatch, click: leaveMatch"}}> Leave Match</button>
     <div class="ui horizontal divider">--</div>
-     {{> matchTeamDisplay}}
+    {{stake}}----{{_id}} ---- {{gameRules}} 
+    {{> matchTeamDisplay}}
+    {{/with}}
 </template>
 
 <template name="matchTeamDisplay">
-    {{#with aMatch}}
-    <input type="hidden" id="matchId" value={{_id}}>
-    {{stake}}----{{_id}}
         <div class="ui middle aligned list" id="readyUpPlayers">
-            {{#each players}}
+            {{#each this.players}}
             <div class="item">
-                <img class="ui avatar image" src="/images/players/avatar.jpg">
-                <div class="content">
-                    <div class="header">
-                        {{name}} --- {{team}} --- {{_id}}
-                        <input type="checkbox" class="checkem" check="{{isChecked ..}}">
-                    </div>
-                </div>
+                --{{name}} --- {{team}} --- {{this._id}}-{{this.createdAt}}---{{readyUp}} H----{{winner}}---
+                <input type="checkbox" {{b "check: this.readyUp"}}>
             </div>
             {{/each}}
         </div>
-    {{/with}}
+</template>
+
+<template name="player">
+        <div class="ui middle aligned list" id="readyUpPlayers">
+                    <div class="item">
+                    {{name}} --- {{team}} --- {{_id}}----{{readyUp}}----{{winner}}
+                    <input type="checkbox" {{b "check: this.readyUp"}}>
+                    </div>
+            </div>
 </template>

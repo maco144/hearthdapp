@@ -31,18 +31,18 @@ if (Meteor.isClient) {
       return Meteor.users.findOne({_id: Meteor.userId()});
     });
 
-    Template.registerHelper("gameSelected", function(){
-      return Session.get("gameSelected");
-    });
+    // Template.registerHelper("gameSelected", function(){
+    //   return Session.get("gameSelected");
+    // });
 
-    Template.registerHelper("gameCollected", function(){
-      var gs = Session.get("gameSelected");
-      return ActiveGames.find({gameName: gs});
-    });
+    // Template.registerHelper("gameCollected", function(){
+    //   var gs = Session.get("gameSelected");
+    //   return ActiveGames.find({gameName: gs});
+    // });
 
-    Template.registerHelper("aMatch", function(){
-      return ActiveGames.findOne({gameName: Session.get("gameSelected"), "players.name": Meteor.userId()});
-    });
+    // Template.registerHelper("aMatch", function(){
+    //   return ActiveGames.findOne({gameName: Session.get("gameSelected"), "players.name": Meteor.userId()});
+    // });
 
   Template.example.helpers({
     usersOnline:function(){
@@ -54,40 +54,40 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.matchTeamDisplay.helpers({
-    'isChecked': function(parentContext){
-      // var matchId = template.find('#matchId');
-      console.log("PARENT CONTEXT ISCHECKED");
-      console.log(parentContext);
-      console.log(this.name);
-      var test = ActiveGames.findOne({_id: parentContext._id, "players.name": this.name}, {fields: {"players.readyUp": 1}});
-      console.log("ewearar"+test.readyUp);
-      return true;
-    },
-    'log': function(){
-      console.log("CALLLOG");
-      console.log(this);
-    }
+  // Template.matchTeamDisplay.helpers({
+  //   'isChecked': function(parentContext){
+  //     // var matchId = template.find('#matchId');
+  //     console.log("PARENT CONTEXT ISCHECKED");
+  //     console.log(parentContext);
+  //     console.log(this.name);
+  //     var test = ActiveGames.findOne({_id: parentContext._id, "players.name": this.name}, {fields: {"players.readyUp": 1}});
+  //     console.log("ewearar"+test.readyUp);
+  //     return true;
+  //   },
+  //   'log': function(){
+  //     console.log("CALLLOG");
+  //     console.log(this);
+  //   }
 
-  });
+  // });
 
-  Template.matchTeamDisplay.events({
-    'change [type=checkbox]': function(event, template){
-      var checked = event.currentTarget.checked;
-      var name = this.name;
-      var matchId = template.find('#matchId');    
-      Meteor.call("readySet", matchId.value, name, checked, function(error,result){
+  // Template.matchTeamDisplay.events({
+  //   'change [type=checkbox]': function(event, template){
+  //     var checked = event.currentTarget.checked;
+  //     var name = this.name;
+  //     var matchId = template.find('#matchId');    
+  //     Meteor.call("readySet", matchId.value, name, checked, function(error,result){
 
-      });
-      // var readyUp = {};
-      // readyUp[name] = checked;
-      // Session.set("readyUp", readyUp);
-      // console.log(Session.get("readyUp"));
-      // if($('.checkem:checked').length == $('.checkem').length){
-      //   console.log("READUYOO");
-      // }
-    }
-  });
+  //     });
+  //     // var readyUp = {};
+  //     // readyUp[name] = checked;
+  //     // Session.set("readyUp", readyUp);
+  //     // console.log(Session.get("readyUp"));
+  //     // if($('.checkem:checked').length == $('.checkem').length){
+  //     //   console.log("READUYOO");
+  //     // }
+  //   }
+  // });
 }
 
 if (Meteor.isServer) {
@@ -134,7 +134,7 @@ if (Meteor.isServer) {
     'createMatch': function(gameSelected, stake, gameDetails){
       var host = this.userId;
       var player = new Player();
-      player.set({name: host, team: 1});
+      player.set({_id: host, name: host, team: 1, readyUp: true, winner: false});
       var newMatch = new ActiveGame();
       newMatch.set({gameName: gameSelected, host: host, stake: stake, gameDetails: gameDetails});
       newMatch.push('players', player);
@@ -155,11 +155,12 @@ if (Meteor.isServer) {
       //already in check (works?)  if(lodash.has(dump, this.userId)){console.log("well well");}
       if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
         var player = new Player();
-        player.set({name: this.userId, team: team});
+        player.set({_id: this.userId, name: this.userId, team: team});
         MatchToJoin.push('players', player);
         MatchToJoin.save();
+        return true;
       }
-      return true;
+      return false;
     },
 
     'leaveMatch': function(matchId){
