@@ -1,9 +1,9 @@
 Template.matchChannel.viewmodel({
 	share: ['gameSelected', 'matchID'],
-	_id: '',
-	name: '',
-	winner: '',
-	readyUp: '',
+	onCreated: function(){
+		var match = ActiveGames.findOne({gameName: this.gameSelected(), "players.name": this.userId});
+		this.matchID(match._id);
+	},
 	unhostMatch: function(){
 		Meteor.call('unhostMatch', this.matchID(), function(error,result){
             //error checking
@@ -15,8 +15,6 @@ Template.matchChannel.viewmodel({
         });
 	},
 	aMatch: function(){
-		var aMatch = ActiveGames.findOne({gameName: this.gameSelected(), "players.name": Meteor.userId()});
-		this.matchID(aMatch._id);
-		return aMatch;
-	},
+		return ActiveGames.findOne({gameName: this.gameSelected(), "players.name": this.userId});
+	}
 });
