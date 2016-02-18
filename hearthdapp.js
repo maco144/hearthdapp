@@ -122,9 +122,13 @@ if (Meteor.isServer) {
     'createMatch': function(gameSelected, stake, gameDetails){
       var newMatch = new ActiveGame();
       newMatch.set({gameName: gameSelected, host: this.userId, stake: stake, gameDetails: gameDetails});
-      newMatch.save();
-      Meteor.call('joinMatch',newMatch.get('_id'),1); //add host to game
-      return true;
+      if(newMatch.validate()){
+        newMatch.save();
+        Meteor.call('joinMatch',newMatch.get('_id'),1); //add host to game
+        return true;
+      }
+      console.log(newMatch.getValidationErrors());
+      return false;
     },
 
     'joinMatch': function(matchId, team){
@@ -135,8 +139,12 @@ if (Meteor.isServer) {
         var player = new Player();
         player.set({_id: this.userId, team: team});
         MatchToJoin.push('players', player);
-        MatchToJoin.save();
-        return true;
+        if(MatchToJoin.validate()){
+          MatchToJoin.save();
+          return true;
+        }
+        console.log(MatchToJoin.getValidationErrors());
+        return false
       }
       return false;
     },
@@ -149,12 +157,12 @@ if (Meteor.isServer) {
     },
 
     'leaveMatch': function(matchId){
-      ActiveGames.update({_id: matchId}, { $pull: { "players": { name:this.userId}}});
+      ActiveGames.update({_id: matchId}, { $pull: { "players": { _id: this.userId}}});
       return true;
     },
 
     'readySet': function(matchId, checked){
-      ActiveGames.update({_id: matchId, "players.name": this.userId}, { $set: { "players.$.readyUp": checked}});
+      ActiveGames.update({_id: matchId, "players._id": this.userId}, { $set: { "players.$.readyUp": checked}});
       return true;
     },
 

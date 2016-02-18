@@ -3,6 +3,6 @@ ViewModel.share({
 		gameSelected: 'none'
 	},
 	matchID: {
-		matchID: null
+		matchID: ''
 	}
 });
