@@ -3,8 +3,9 @@
     <button class="negative fluid ui button" {{b "visible: parent.hostingMatch, click: unhostMatch"}}> Cancel Match</button>
     <button class="negative fluid ui button" {{b "unless: parent.hostingMatch, click: leaveMatch"}}> Leave Match</button>
     <div class="ui horizontal divider">--</div>
-    {{this.stake}}----{{_id}} ---- {{gameRules}} 
+    {{stake}}----{{_id}} ---- {{gameRules}} --- {{startedAt}}
     {{> matchTeamDisplay}}
+    {{log}}
     {{/with}}
 </template>
 
@@ -12,17 +13,19 @@
         <div class="ui middle aligned list" id="readyUpPlayers">
             {{#each players}}
             <div class="item">
-                --{{name}} --- {{team}} --- {{this._id}}-{{this.createdAt}}---{{readyUp}} H----{{winner}}---
+                - {{team}} - {{this._id}}--{{readyUp}} H-{{winner}}-
                 <input type="checkbox" {{b "check: this.readyUp"}}>
             </div>
-            {{/each}}
+             {{/each}}
         </div>
+
 </template>
 
-<template name="player">
+<template name="player2">
         <div class="ui middle aligned list" id="readyUpPlayers">
                     <div class="item">
-                    {{name}} --- {{team}} --- {{_id}}----{{readyUp}}----{{winner}}
+                    PARTY
+                    {{player.name}} --- {{this.team}} --- {{_id}}----{{readyUp}}----{{winner}}
                     <input type="checkbox" {{b "check: this.readyUp"}}>
                     </div>
             </div>

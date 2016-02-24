@@ -92,9 +92,9 @@ if (Meteor.isServer) {
     });
 
     GameTypes.remove({});
-    GameTypes.insert({gamename: 'Warsow'}); 
-    GameTypes.insert({gamename: 'Newerth'}); 
-    GameTypes.insert({gamename: 'Other'}); 
+    GameTypes.insert({gameName: 'Warsow'}); 
+    GameTypes.insert({gameName: 'Newerth'}); 
+    GameTypes.insert({gameName: 'Other'}); 
   });
 
 
@@ -135,7 +135,7 @@ if (Meteor.isServer) {
       var MatchToJoin = ActiveGames.findOne({_id: matchId});
       var dump = MatchToJoin.raw('players');
       //already in check (works?)  if(lodash.has(dump, this.userId)){console.log("well well");}
-      if (lodash.isUndefined(lodash.find(dump, {name: this.userId}))){
+      if (lodash.isUndefined(lodash.find(dump, {_id: this.userId}))){
         var player = new Player();
         player.set({_id: this.userId, team: team});
         MatchToJoin.push('players', player);

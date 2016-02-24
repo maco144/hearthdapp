@@ -18,5 +18,8 @@ Template.matchChannel.viewmodel({
 		var match = ActiveGames.findOne({gameName: this.gameSelected(), "players._id": Meteor.userId()});
 		this.matchID(match._id);
 		return match;
+	},
+	log: function(){
+		console.log(this);
 	}
 });

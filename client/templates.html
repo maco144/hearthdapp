@@ -10,7 +10,7 @@
 
 <template name="mainlayout">
   <div class="page-wrap">
-        <nav class="ui inverted pointing menu nav">
+        <div class="ui top attached inverted pointing menu nav">
             {{#if currentUser}}
             <a class="{{isActiveRoute 'main'}} item" href="{{pathFor 'main'}}"><i class="home icon"></i> Home</a>
             <a class="{{isActiveRoute 'games'}} item" href="{{pathFor 'games'}}"><i class="users icon"></i> Games</a>
@@ -26,9 +26,11 @@
                 {{/if}}
               
             </div>
-        </nav>
+        </div>
         <main>
-            {{> yield}}
+            <div class="ui bottom attached segment pushable">
+                {{> yield}}
+            </div>
         </main>
     </div>
   </template>
@@ -77,8 +79,8 @@
         <div class="menu">
             <div class="header"><i class="users icon"></i> Hunters</div>
             <div class="divider"></div>
-            <a class="item" href="{{pathFor 'games'}}">My Hunters</a>
-            <a class="item" href="{{pathFor 'games'}}">Add Hunter</a>
+            <a class="item" href="{{pathFor 'games'}}">Games</a>
+            <a class="item" href="{{pathFor 'games'}}">Games</a>
             <div class="divider"></div>
             <div class="header"><i class="settings icon"></i> Settings</div>
             <a class="item" href="{{pathFor 'profile'}}">Network</a>

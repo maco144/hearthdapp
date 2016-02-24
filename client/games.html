@@ -1,5 +1,10 @@
 <template name="games">
     {{#if currentUser}}
+    {{#if inMatchAnywhere}}
+    <div class="ui sidebar left thin visible menu">
+        {{> matchesJoined}}
+    </div>
+    {{/if}}
     <div class="pusher">
         {{> hostMatch}}
         {{#if inMatchChannel}}{{> matchChannel}}

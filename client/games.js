@@ -9,5 +9,8 @@ Template.games.viewmodel({
 	},
 	inMatchChannel: function(){
 		return (this.hostingMatch() || this.playingMatch());
+	},
+	inMatchAnywhere: function(){
+		return !!ActiveGames.findOne({'players._id': Meteor.userId()});
 	}
 });
