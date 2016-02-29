@@ -118,6 +118,10 @@ if (Meteor.isServer) {
     return ActiveGames.find({'players._id': this.userId})
   });
 
+  Meteor.publish('matchInfo', function(aMatch){
+    return ActiveGames.find({_id: aMatch});
+  });
+
   Meteor.methods({
     'userDisconnected': function(lastUser){
       ActiveGames.remove({host: lastUser});

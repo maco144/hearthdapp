@@ -1,7 +1,7 @@
 <template name="matchesJoined">
 	<div class="ui vertical menu">
 	{{#each gamesIn}}
-		<a class="item" {{b "click: matchID(this._id"}}>{{_id}}
+		<a class="item" {{b "click: matchID(this._id)"}}>{{_id}}
 			<div class="ui label">{{stake}}</div>
 		</a>
 	{{/each}}
