@@ -1,6 +1,9 @@
 Template.activeGames.viewmodel({
 	share: 'gameSelected',
 	hovering: false,
+	onRendered: function(template){
+		template.subscribe('activeGames', this.gameSelected());
+	},
 	gameCollection: function(){
 		return ActiveGames.find({gameName: this.gameSelected()});
 	},

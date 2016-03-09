@@ -1,0 +1,32 @@
+<template name="mainlayout">
+  <div class="page-wrap">
+        <div class="ui top attached inverted pointing menu nav">
+            {{#if currentUser}}
+            <a class="{{isActiveRoute 'main'}} item" href="{{pathFor 'main'}}"><i class="home icon"></i> Home</a>
+            <a class="{{isActiveRoute 'games'}} item" href="{{pathFor 'games'}}"><i class="users icon"></i> Games</a>
+            <a class="{{isActiveRoute 'profile'}} item" href="{{pathFor 'profile'}}"><i class="alarm outline icon"></i> Profile</a>
+            {{/if}}
+            <div class="right menu">        
+                {{#if currentUser}}
+                {{> CurrentUserMenu}}
+                {{else}}
+                {{#if config 'allowSignin' true}}
+                    <a class="{{isActiveRoute regex='SignIn|Register'}} item" href="{{pathFor 'signin'}}"><i class="sign in icon"></i> Sign In{{#if config 'allowSignup' true}} or Register{{/if}}</a>
+                    {{/if}}
+                {{/if}}
+              
+            </div>
+        </div>
+        <main>
+            <div class="ui bottom attached segment pushable">
+                {{> yield}}
+            </div>
+        </main>  
+
+        <div class="ui sidebar bottom inline visible">
+        {{#if inMatchAnywhere}}
+            {{> matchesJoined}}
+        {{/if}}
+        </div>
+    </div>
+</template>

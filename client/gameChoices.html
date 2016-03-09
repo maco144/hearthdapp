@@ -1,8 +1,10 @@
 <template name="gameChoices">
+	<div class="ui sidebar vertical left thin visible menu">
     {{#each gametypes}}
         <a class="item" {{b "click: gameSelected(this.gameName)"}}>
         {{gameName}}
         </a>
     {{/each}}
     {{gameSelected}}
+</div>
 </template>

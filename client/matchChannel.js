@@ -1,9 +1,10 @@
 Template.matchChannel.viewmodel({
 	share: ['gameSelected', 'matchID'],
 
-	onCreated: function(template){
-		template.subscribe('matchInfo', this.matchID());
+	onRendered: function(template){
+			template.subscribe('matchInfo', this.matchID());
 	},
+		
 	unhostMatch: function(){
 		Meteor.call('unhostMatch', this.matchID(), function(error,result){
             //error checking

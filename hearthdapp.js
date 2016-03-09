@@ -3,7 +3,6 @@ if (Meteor.isClient) {
   Meteor.subscribe("config");         //for UI configs with router
   Meteor.subscribe("collect");        //for testing upload from file
   Meteor.subscribe("gametypes");      //the variety of games displayed
-  Meteor.subscribe("activeGames");    //The Game Queue
 
   var lastUser=null;
   Meteor.startup(function(){
@@ -110,8 +109,8 @@ if (Meteor.isServer) {
     return GameTypes.find({});
   });
 
-  Meteor.publish('activeGames', function(){
-    return ActiveGames.find({});
+  Meteor.publish('activeGames', function(game){
+    return ActiveGames.find({gameName: game});
   });
 
   Meteor.publish('gamesIn', function(){
